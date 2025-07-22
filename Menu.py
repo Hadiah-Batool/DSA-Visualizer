@@ -1,20 +1,8 @@
 import pygame, sys, math
 from Buttons import Button
+from UIProperties import *
+from Arrays import Array
 pygame.init()
-#LOAD FONT SIZES, COLORS
-GREY  = (217, 200, 191)
-WHITE = (255, 247, 228)
-DED_GREEN =(179, 227, 218)
-PURPLE= (176,169, 228)
-BLACK_1=(40, 40, 46)
-MAROON=(108, 86, 113)
-L_GREEN=(176, 235, 147)
-D_GREEN=(135, 168,137 )
-PINK=(254, 170, 228)
-FONT_S1 = pygame.font.Font(r'DSA_Visualizer\BlockBlueprint.ttf', 64)
-FONT_S2 = pygame.font.Font(r'DSA_Visualizer\BlockBlueprint.ttf', 48)
-FONT_S3 = pygame.font.Font(r'DSA_Visualizer\BlockBlueprint.ttf', 32)
-FONT_S4 = pygame.font.Font(r'DSA_Visualizer\BlockBlueprint.ttf', 24)
 temp= pygame.image.load(r'D:\Hadia\Python\DSA_Visualizer\HomeScreen_Bg.png')
 Bg_Start= pygame.transform.smoothscale(temp, (800, 600))
 Bg_Rect= Bg_Start.get_rect(center=(400, 300))
@@ -30,6 +18,12 @@ class MenuObj:
         self.state = "main"    # other possible value: "options"
         self.ds_options=['Arrays', 'Linked Lists', 'Stacks', 'Queues', 'Trees', 'Heaps']
         self.ds_Btns = []
+        i=80
+        for B in self.ds_options:
+            btn = Button(250, i, r'DSA_Visualizer\B_Pink.png', B, 30, 220, 110)
+            self.ds_Btns.append(btn)
+            i += 80
+
         self.algo_options=['Sorting Algorithms', '  Searching Algorithms']
         # 2) map button texts to the methods that should run
         self.algo_Btns = []
@@ -39,13 +33,17 @@ class MenuObj:
             "SETTINGS":  self._open_settings,
             "QUIT":      self._quit_game,
             "Data Structures": self._go_to_DataStructures,
-            "Algorithms": self._go_to_Algorithms
-            
+            "Algorithms": self._go_to_Algorithms,
+            "Arrays": self._go_to_Arrays
         }
     def _go_to_options(self):
         self.state = "options"
     def _go_to_DataStructures(self):
         self.state="Data Structures"
+    def _go_to_Arrays(self):
+        self.state="Arrays"
+        self.array = Array()
+        
     def _open_settings(self):
         # whatever you want your settings button to do
         pass
@@ -115,9 +113,8 @@ class MenuObj:
                     screen.fill(BLACK_1)
 
     def HandleEvents(self, event):
-        if event.type not in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION):
+        if event.type not in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION, pygame.KEYDOWN, pygame.QUIT):
             return
-
         # choose which list to route events to
         if self.state == "main":
             button_list = self.Menu_Btns
@@ -127,6 +124,9 @@ class MenuObj:
             button_list = self.ds_Btns
         elif self.state == "Algorithms":
             button_list = self.algo_Btns
+        elif self.state == "Arrays":
+            button_list = self.array.dataType_Btns
+            self.array.AskUser(event)
         else:
             button_list = self.Menu_Btns  
 
@@ -164,12 +164,10 @@ class MenuObj:
         elif self.state == "Data Structures":
            header = FONT_S2.render("Data Structures", True, WHITE, DED_GREEN)
            self.screen.blit(header, header.get_rect(center=(400, 50)))
-           i=80
-           for B in self.ds_options:
-                btn = Button(250, i, r'DSA_Visualizer\B_Pink.png', B, 30, 220, 110)
-                self.ds_Btns.append(btn)
+           
+           for btn in self.ds_Btns:
                 btn.display(self.screen)
-                i += 80
+                
         elif self.state == "Algorithms":
             header = FONT_S1.render("Algorithms", True, WHITE, D_GREEN)
             self.screen.blit(header, header.get_rect(center=(350, 50)))
@@ -179,5 +177,8 @@ class MenuObj:
                 self.algo_Btns.append(btn)
                 btn.display(self.screen)
                 i += 200
-            
+        elif self.state == "Arrays":
+            self.array.Draw(self.screen)
+            for btn in self.array.dataType_Btns:
+                btn.display(self.screen)
 
