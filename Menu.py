@@ -34,7 +34,12 @@ class MenuObj:
             "QUIT":      self._quit_game,
             "Data Structures": self._go_to_DataStructures,
             "Algorithms": self._go_to_Algorithms,
-            "Arrays": self._go_to_Arrays
+            "Arrays": self._go_to_Arrays,
+            "Integer": self.go_to_arrayInterface,
+            "Float": self.go_to_arrayInterface,
+            "String": self.go_to_arrayInterface,
+            "Char": self.go_to_arrayInterface, 
+            # "Insert": self.go_to_Insert,
         }
     def _go_to_options(self):
         self.state = "options"
@@ -43,10 +48,14 @@ class MenuObj:
     def _go_to_Arrays(self):
         self.state="Arrays"
         self.array = Array()
-        
+    def go_to_arrayInterface(self):
+        self.state = "Array Interface"
+        self.array.InitializeRects()
     def _open_settings(self):
         # whatever you want your settings button to do
         pass
+    # def go_to_Insert(self):
+    #     self.state="Array_Insert"
     def _go_to_Algorithms(self):
         self.state="Algorithms"
     def _quit_game(self):
@@ -113,6 +122,7 @@ class MenuObj:
                     screen.fill(BLACK_1)
 
     def HandleEvents(self, event):
+        
         if event.type not in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION, pygame.KEYDOWN, pygame.QUIT):
             return
         # choose which list to route events to
@@ -127,12 +137,31 @@ class MenuObj:
         elif self.state == "Arrays":
             button_list = self.array.dataType_Btns
             self.array.AskUser(event)
+        elif self.state == "Array Interface":
+            self.array.Take_input(event)
+            button_list = self.array.interface_Btns
+        # elif self.state == "Array_Insert":
+        #     self.array.insert(self.array.val)
+        #     button_list = self.array.interface_Btns
+            
+            
+
         else:
             button_list = self.Menu_Btns  
 
         for btn in button_list:
             if btn.is_clicked(event):
+                if(self.state == "Arrays" and btn.text in ["Integer", "Float", "String", "Char"]):
+                    self.array.dataType = btn.text
                 action = self.actions.get(btn.text)
+                if (self.state == "Array Interface") and btn.text == "Insert":
+                    print("INSERT BUTTON CLICKED")
+                    print("Printing Val:", self.array.val)
+                    self.array.insert(self.array.val)
+                # elif self.state == "Array Interface" and btn.text == "Delete":
+                #     self.array.delete(self.array.val)
+                # elif self.state == "Array Interface" and btn.text == "Back":
+                #     self.state = "Arrays"
                 if action:
                     action()
                 else:
@@ -147,7 +176,7 @@ class MenuObj:
 
         if self.state == "main":
             txt= "Choose an option."
-            txt_D= FONT_S1.render(txt, True, WHITE,PURPLE)
+            txt_D= FONT_S1.render(txt, True, WHITE,DED_GREEN)
             txt_D_rect= txt_D.get_rect(center=(400, 50))
             self.screen.blit(txt_D, txt_D_rect)
             for btn in self.Menu_Btns:
@@ -181,4 +210,11 @@ class MenuObj:
             self.array.Draw(self.screen)
             for btn in self.array.dataType_Btns:
                 btn.display(self.screen)
+        elif self.state == "Array Interface":
+            self.array.drawInterface(self.screen)
+        elif self.state == "Array_Insert":
+            self.array.drawInterface(self.screen)
+
+
+
 
