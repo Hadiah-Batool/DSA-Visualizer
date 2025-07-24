@@ -140,9 +140,7 @@ class MenuObj:
         elif self.state == "Array Interface":
             self.array.Take_input(event)
             button_list = self.array.interface_Btns
-        # elif self.state == "Array_Insert":
-        #     self.array.insert(self.array.val)
-        #     button_list = self.array.interface_Btns
+
             
             
 
@@ -155,13 +153,11 @@ class MenuObj:
                     self.array.dataType = btn.text
                 action = self.actions.get(btn.text)
                 if (self.state == "Array Interface") and btn.text == "Insert":
-                    print("INSERT BUTTON CLICKED")
-                    print("Printing Val:", self.array.val)
                     self.array.insert(self.array.val)
-                # elif self.state == "Array Interface" and btn.text == "Delete":
-                #     self.array.delete(self.array.val)
-                # elif self.state == "Array Interface" and btn.text == "Back":
-                #     self.state = "Arrays"
+                elif self.state == "Array Interface" and btn.text == "Delete":
+                    self.array.delete(self.array.val)
+                elif self.state == "Array Interface" and btn.text == "Clear":
+                    self.array.Clear()
                 if action:
                     action()
                 else:

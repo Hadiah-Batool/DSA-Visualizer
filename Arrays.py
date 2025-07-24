@@ -37,6 +37,7 @@ class Array (DataStructure):
         self.interval=1500
         #values rects
         self.rects = []
+        self.id_rects=[]
         self.interface_Btns = [ Button(150, 50, r'DSA_Visualizer/B_Red.png', "Insert", 32, 200, 100),
                                 Button(350, 50, r'DSA_Visualizer/B_Red.png', "Delete", 32, 200, 100),
                                 Button(550, 50, r'DSA_Visualizer/B_Red.png',"Clear", 32, 200, 100) 
@@ -112,14 +113,26 @@ class Array (DataStructure):
             
             self.highlight_start = pygame.time.get_ticks()
 
-            
-
+    def Clear(self) -> None:
+        # Clear the values and reset the current count
+        self.values = [None] * self.size
+        self.current_Count = 0
+        self.highlight_index = None
+        self.highlight_start = 0
+        print("Cleared all values")    
 
     def delete(self, data: DataType) -> None:
         # Delete data from the values
         print(f"Deleting {data} from the values")
-        self.values.remove(data)
+        x= self.values.index(data) if data in self.values else -1
+        if x != -1:
+            self.values[x] = None
+            self.highlight_index = x
+            self.highlight_start = pygame.time.get_ticks()
+            print(f"Highlighting index: {self.highlight_index}")
         
+        if self.current_Count > 0:
+            self.current_Count -= 1
 
     def Draw(self, screen) -> None:
         # draw the prompt
@@ -160,9 +173,26 @@ class Array (DataStructure):
 
             # draw stored value (if any) centered
             if self.values[i] is not None:
-                txt = FONT_S2.render(str(self.values[i]), True, WHITE)
+                if(self.size< 10):
+                    txt = FONT_S2.render(str(self.values[i]), True, WHITE)
+                else:
+                    txt = FONT_S4.render(str(self.values[i]), True, WHITE)
                 txt_rect = txt.get_rect(center=rect.center)
                 screen.blit(txt, txt_rect)
+        for i, rect in enumerate(self.id_rects):
+            if (i == self.highlight_index and
+                now - self.highlight_start < self.interval):
+                color = D_RED
+            else:
+                color = L_GREEN
+
+            pygame.draw.rect(screen, color, rect, 4)
+
+            # draw index number centered
+            txt = FONT_S4.render(str(i), True, WHITE)
+            txt_rect = txt.get_rect(center=rect.center)
+            screen.blit(txt, txt_rect)
+
 
         # end the highlight after the duration
         if self.highlight_index is not None and \
@@ -180,4 +210,14 @@ class Array (DataStructure):
                 CELL_HEIGHT
             )
             for i in range(self.size)
+
         ]  
+        self.id_rects = [
+            pygame.Rect(
+                LEFT_MARGIN + i*(cell_w+SPACING),
+                TOP_MARGIN + CELL_HEIGHT + 15,
+                cell_w,
+                30
+            )
+            for i in range(self.size)
+        ]
