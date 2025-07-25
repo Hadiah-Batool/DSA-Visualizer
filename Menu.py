@@ -2,6 +2,7 @@ import pygame, sys, math
 from Buttons import Button
 from UIProperties import *
 from Arrays import Array
+from Linked_Lists import LinkedList
 pygame.init()
 temp= pygame.image.load(r'D:\Hadia\Python\DSA_Visualizer\HomeScreen_Bg.png')
 Bg_Start= pygame.transform.smoothscale(temp, (800, 600))
@@ -18,6 +19,7 @@ class MenuObj:
         self.state = "main"    # other possible value: "options"
         self.ds_options=['Arrays', 'Linked Lists', 'Stacks', 'Queues', 'Trees', 'Heaps']
         self.ds_Btns = []
+        
         i=80
         for B in self.ds_options:
             btn = Button(250, i, r'DSA_Visualizer\B_Pink.png', B, 30, 220, 110)
@@ -39,7 +41,8 @@ class MenuObj:
             "Float": self.go_to_arrayInterface,
             "String": self.go_to_arrayInterface,
             "Char": self.go_to_arrayInterface, 
-            # "Insert": self.go_to_Insert,
+            "Linked Lists": self._go_to_LinkedLists,
+            "Linked List Interface": self.go_to_linked_list_interface
         }
     def _go_to_options(self):
         self.state = "options"
@@ -51,11 +54,16 @@ class MenuObj:
     def go_to_arrayInterface(self):
         self.state = "Array Interface"
         self.array.InitializeRects()
+    def _go_to_LinkedLists(self):
+        self.linked_list = LinkedList()
+        self.state = "Linked Lists"
+    def go_to_linked_list_interface(self):
+        self.state = "Linked List Interface"
+        
     def _open_settings(self):
         # whatever you want your settings button to do
         pass
-    # def go_to_Insert(self):
-    #     self.state="Array_Insert"
+
     def _go_to_Algorithms(self):
         self.state="Algorithms"
     def _quit_game(self):
@@ -140,9 +148,13 @@ class MenuObj:
         elif self.state == "Array Interface":
             self.array.Take_input(event)
             button_list = self.array.interface_Btns
-
-            
-            
+        elif self.state == "Linked Lists":
+            button_list = self.linked_list.dataType_Btns
+        elif self.state == "Linked List Interface" and not self.linked_list.inDisplayBoxes:
+            button_list = self.linked_list.interface_Btns
+        elif self.state == "Linked List Interface" and self.linked_list.inDisplayBoxes:
+            self.linked_list.HandleInput(event)
+            button_list = self.linked_list.Where_To_Buttons
 
         else:
             button_list = self.Menu_Btns  
@@ -158,6 +170,28 @@ class MenuObj:
                     self.array.delete(self.array.val)
                 elif self.state == "Array Interface" and btn.text == "Clear":
                     self.array.Clear()
+                elif self.state == "Linked Lists" and btn.text in ["Integer", "Float", "String", "Char"]:
+                    self.go_to_linked_list_interface()
+                    self.linked_list.dataType = btn.text
+                    self.linked_list.inDisplayBoxes = True
+                    return
+                # elif self.state == "Linked List Interface" and btn.text in ["Insert", "Delete", "Search"]:
+                #     if btn.text == "Insert":
+                #         self.linked_list.insert(self.linked_list.val)
+                #     elif btn.text == "Delete":
+                #         self.linked_list.delete(self.linked_list.val)
+                #     elif btn.text == "Search":
+                #         self.linked_list.search(self.linked_list.val)
+                elif self.state == "Linked List Interface" and btn.text in ["At Head", "At Tail", "At Index"]:
+                    if btn.text == "At Head":
+                        self.linked_list.insert_at_head(self.linked_list.val)
+                    elif btn.text == "At Tail":
+                        self.linked_list.insert_at_tail(self.linked_list.val)
+                    elif btn.text == "At Index":
+                        self.linked_list.insert_at_index(self.linked_list.val, self.linked_list.idx)
+                        self.linked_list.In_Indx = True
+                    return
+                
                 if action:
                     action()
                 else:
@@ -210,6 +244,15 @@ class MenuObj:
             self.array.drawInterface(self.screen)
         elif self.state == "Array_Insert":
             self.array.drawInterface(self.screen)
+        elif self.state == "Linked Lists":
+            self.linked_list.AskUser(self.screen)
+        elif self.state == "Linked List Interface" :
+            self.linked_list.Draw_Buttons(self.screen)
+            if self.linked_list.inDisplayBoxes:
+                self.linked_list.Draw_Where_To_Buttons(self.screen)
+                self.linked_list.Draw_Inp_Box(self.screen)
+        
+
 
 
 

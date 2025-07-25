@@ -89,6 +89,10 @@ class Array (DataStructure):
         if event.type == pygame.KEYDOWN:
             if self.active2:
                 if event.key == pygame.K_RETURN:
+                    if self.input_text == '' or self.input_text is None:
+                        print("Please enter a value to insert/delete")
+                        return
+                    else:
                         self.val = self.data_Type_dict[self.dataType](self.input_text)
                 elif event.key == pygame.K_BACKSPACE:
                     self.input_text = self.input_text[:-1]
@@ -96,7 +100,7 @@ class Array (DataStructure):
                     self.input_text += event.unicode
             
             print(f"Input text: {self.input_text}")
-            self.val = self.data_Type_dict[self.dataType](self.input_text)
+            # self.val = self.data_Type_dict[self.dataType](self.input_text)
 
     def insert(self, data: DataType) -> None:
     # only called when user clicks your “Insert” Button
@@ -136,10 +140,12 @@ class Array (DataStructure):
 
     def Draw(self, screen) -> None:
         # draw the prompt
-        txt = "Enter the size of the values:(Press Enter to confirm)"
-        screen.blit(FONT_S3.render(txt, True, WHITE), (10, 20))
+        txt1 = "Enter the size of the values:(Press Enter to confirm)" 
+        txt2 = "Please choose a moderate size For better visualization"
+        screen.blit(FONT_S3.render(txt1, True, WHITE), (10, 10))
+        screen.blit(FONT_S3.render(txt2, True, WHITE), (10, 50))
         # draw the current text
-        txt_surf = FONT_S3.render(self.text, True, WHITE)
+        txt_surf = FONT_S2.render(self.text, True, WHITE)
         self.input_box.w = max(200, txt_surf.get_width()+10)
         screen.blit(txt_surf, (self.input_box.x+5, self.input_box.y+5))
          # draw the box

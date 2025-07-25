@@ -23,7 +23,7 @@ pygame.display.set_caption("Algorithm Visulaizer")
 menu_Dict={'START':menu.SelectionButtons_Display }
 # First show the blocking title screen:
 menu.title_screen()
-x=''
+
 # Now the real game loop:
 while True:
     # 1) handle events

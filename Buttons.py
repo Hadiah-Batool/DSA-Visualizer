@@ -1,7 +1,7 @@
 import pygame
 
 WHITE = (255, 247, 228)
-GREY  = (217, 200, 191)
+Off_White  = (217, 200, 191)
 
 class Button:
     def __init__(self, x, y, image_path, text, font_size, scale_x, scale_y):
@@ -16,7 +16,7 @@ class Button:
         
     def is_hovered(self, event):
         if event.type == pygame.MOUSEMOTION and self.rect.collidepoint(event.pos):
-            self.text_surface = self.font.render(self.text, True, GREY)
+            self.text_surface = self.font.render(self.text, True, Off_White)
             return True
         else:
             self.text_surface = self.font.render(self.text, True, WHITE)
