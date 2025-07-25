@@ -130,7 +130,7 @@ class MenuObj:
                     screen.fill(BLACK_1)
 
     def HandleEvents(self, event):
-        
+        """ Handle all events in the menu"""
         if event.type not in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION, pygame.KEYDOWN, pygame.QUIT):
             return
         # choose which list to route events to
@@ -173,24 +173,31 @@ class MenuObj:
                 elif self.state == "Linked Lists" and btn.text in ["Integer", "Float", "String", "Char"]:
                     self.go_to_linked_list_interface()
                     self.linked_list.dataType = btn.text
+                    return
+                elif self.state == "Linked List Interface" and btn.text in ["Insert", "Delete", "Search"]:
                     self.linked_list.inDisplayBoxes = True
-                    return
-                # elif self.state == "Linked List Interface" and btn.text in ["Insert", "Delete", "Search"]:
-                #     if btn.text == "Insert":
-                #         self.linked_list.insert(self.linked_list.val)
-                #     elif btn.text == "Delete":
-                #         self.linked_list.delete(self.linked_list.val)
-                #     elif btn.text == "Search":
-                #         self.linked_list.search(self.linked_list.val)
+                    if btn.text == "Insert":
+                        # self.linked_list.insert(self.linked_list.val)
+                        print("Inserting in Linked List")
+                    elif btn.text == "Delete":
+                        # self.linked_list.delete(self.linked_list.val)
+                        print("Deleting from Linked List")
+                    elif btn.text == "Search":
+                        # self.linked_list.search(self.linked_list.val)
+                        print("Searching in Linked List")
                 elif self.state == "Linked List Interface" and btn.text in ["At Head", "At Tail", "At Index"]:
+                    
                     if btn.text == "At Head":
-                        self.linked_list.insert_at_head(self.linked_list.val)
+                        print("At Head")
+                        #self.linked_list.insert_at_head(self.linked_list.val)
                     elif btn.text == "At Tail":
-                        self.linked_list.insert_at_tail(self.linked_list.val)
+                        print("At Tail")
+                        #self.linked_list.insert_at_tail(self.linked_list.val)
                     elif btn.text == "At Index":
-                        self.linked_list.insert_at_index(self.linked_list.val, self.linked_list.idx)
-                        self.linked_list.In_Indx = True
-                    return
+                       # self.linked_list.insert_at_index(self.linked_list.val, self.linked_list.idx)
+                       print("In Index")
+                       self.linked_list.In_Indx = True
+                       return
                 
                 if action:
                     action()

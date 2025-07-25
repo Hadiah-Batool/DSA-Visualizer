@@ -11,13 +11,14 @@ class LinkedList(DataStructure):
         self.size = 0
         self.nodes = []
         #1 boxes for  value 
-        self.input_box= pygame.Rect(200, 80, 140, 50)   
+        self.input_box= pygame.Rect(200, 100, 140, 50)   
         #input index box
-        self.index_input_box = pygame.Rect(80, 80, 100, 50)
+        self.index_input_box = pygame.Rect(500, 100, 100, 50)
         self.color_active = L_GREEN
         self.color_inactive = DED_GREEN
         self.color = self.color_inactive
-        self.active = False
+        self.active1 = False # for value input
+        self.active2 = False # for index input
         self.text = ''
         self.val = None
         self.idx = None
@@ -63,16 +64,20 @@ class LinkedList(DataStructure):
     def HandleInput(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.input_box.collidepoint(event.pos):
-                self.active = not self.active
+                self.active1 = True
             else:
-                self.active = False
+                self.active1 = False
             if self.index_input_box.collidepoint(event.pos):
-                self.In_Indx = not self.In_Indx
+                self.In_Indx = True
+                self.active2 = True
             else:
+                self.active2 = False
                 self.In_Indx = False
+
         if event.type == pygame.KEYDOWN:
-            if self.active:
+            if self.active1:
                 if event.key == pygame.K_RETURN:
+                    self.active1 = False
                     try:
                         self.val = self.data_Type_dict[self.dataType](self.text)
                         print(f"Value set to: {self.val}")
@@ -83,8 +88,9 @@ class LinkedList(DataStructure):
                     self.text = self.text[:-1]
                 else:
                     self.text += event.unicode
-            if self.In_Indx:
+            if self.In_Indx and self.active2:
                 if event.key == pygame.K_RETURN:
+                    self.active2 = False
                     try:
                         self.idx = int(self.idx_txt)
                         print(f"Index set to: {self.idx}")
@@ -101,14 +107,44 @@ class LinkedList(DataStructure):
             b.display(screen)
     def Draw_Inp_Box(self, screen):
         """ Draw the input box for value"""
-        pygame.draw.rect(screen, self.color, self.input_box, 2)
-        txt_surface = FONT_S1.render(self.text, True, WHITE)
+        Ins1="Press Enter "
+        Ins2="to confirm"
+        Ins3= "input"
+        Ins1_surface = FONT_S3.render(Ins1, True, WHITE)
+        Ins2_surface = FONT_S3.render(Ins2, True, WHITE)
+        Ins3_surface = FONT_S3.render(Ins3, True, WHITE)
+        screen.blit(Ins1_surface, (630, 10))
+        screen.blit(Ins2_surface, (630, 30))
+        screen.blit(Ins3_surface, (630, 50))
+        r= pygame.Rect(620, 10, 175, 80)
+        pygame.draw.rect(screen, YELLOW, r, 3)
+        """ Draw the input box for value"""
+        if self.active1:
+            self.color = self.color_active
+        else:
+            self.color = self.color_inactive
+        y="Input Value"
+        pygame.draw.rect(screen, self.color, self.input_box, 3)
+        txt_surface = FONT_S2.render(self.text, True, WHITE)
+        y_surface = FONT_S4.render(y, True, WHITE)
+        screen.blit(y_surface, (self.input_box.x, self.input_box.y + 50))
         screen.blit(txt_surface, (self.input_box.x + 5, self.input_box.y + 5))
-        if self.active:
-            pygame.draw.rect(screen, self.color_active, self.input_box, 2)
+        if self.active1:
+            pygame.draw.rect(screen, self.color_active, self.input_box, 3)
+        """ Draw the input box for index if active"""
+        clr=None
+
+        if self.active2:
+            clr = self.color_active
+        else:
+            clr = self.color_inactive
         if self.In_Indx:
-            pygame.draw.rect(screen, self.color, self.index_input_box, 2)
-            idx_surface = FONT_S1.render(self.idx_txt, True, WHITE)
+            """ Draw the input box for index"""
+            x="Input Index"
+            pygame.draw.rect(screen, clr, self.index_input_box, 3)
+            idx_surface = FONT_S2.render(self.idx_txt, True, WHITE)
+            x_surface = FONT_S4.render(x, True, WHITE)
+            screen.blit(x_surface, (self.index_input_box.x , self.index_input_box.y + 50))
             screen.blit(idx_surface, (self.index_input_box.x + 5, self.index_input_box.y + 5))
-            if self.active:
-                pygame.draw.rect(screen, self.color_active, self.index_input_box, 2)
+        if self.In_Indx:
+            pygame.draw.rect(screen, clr, self.index_input_box, 3)
