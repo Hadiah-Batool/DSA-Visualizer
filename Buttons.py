@@ -13,6 +13,7 @@ class Button:
         self.font = pygame.font.Font(r'DSA_Visualizer\BlockBlueprint.ttf', font_size)
         self.text_surface = self.font.render(text, True, WHITE)
         self.text_rect   = self.text_surface.get_rect(center=self.rect.center)
+        self.amClicked = False
         
     def is_hovered(self, event):
         if event.type == pygame.MOUSEMOTION and self.rect.collidepoint(event.pos):
@@ -23,8 +24,9 @@ class Button:
             return False
 
     def is_clicked(self, event):
-        return (event.type == pygame.MOUSEBUTTONDOWN and
-                self.rect.collidepoint(event.pos))
+        # Check if the button is clicked
+
+        return  (event.type == pygame.MOUSEBUTTONDOWN and self.rect.collidepoint(event.pos))
 
     def display(self, screen):
         screen.blit(self.image, self.rect)

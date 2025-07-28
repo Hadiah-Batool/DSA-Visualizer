@@ -11,7 +11,6 @@ class DataStructure(ABC):
         Before doing anythingask user for datatype or any size(arrays)
         """
         pass
-    @abstractmethod
     def insert(self, data: DataType) -> None:
         """
         Insert data into the data structure.

@@ -3,7 +3,7 @@ from UIProperties import *
 pygame.init()
 from Data_Structures import *
 from Buttons import Button
-LEFT_MARGIN, TOP_MARGIN = 20, 200
+LEFT_MARGIN = 20
 SPACING = 5
 CELL_HEIGHT = 100
 class Array (DataStructure):
@@ -27,6 +27,7 @@ class Array (DataStructure):
         self.active2        = False
         # Initialize the text(for values size) and input text(val)
         self.text          =''
+        self.top_Margin = 200
         self.val=0
         self.input_text    =''
         self.current_Count = 0
@@ -81,11 +82,9 @@ class Array (DataStructure):
         """ Take input from the user for inserting or deleting an element"""
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.input_box_element.collidepoint(event.pos):
-                self.active2 = not self.active2
+                self.active2 = True
             else:
                 self.active2 = False
-        if self.active2:
-            self.color = self.color_active
         if event.type == pygame.KEYDOWN:
             if self.active2:
                 if event.key == pygame.K_RETURN:
@@ -100,7 +99,7 @@ class Array (DataStructure):
                     self.input_text += event.unicode
             
             print(f"Input text: {self.input_text}")
-            # self.val = self.data_Type_dict[self.dataType](self.input_text)
+            
 
     def insert(self, data: DataType) -> None:
     # only called when user clicks your “Insert” Button
@@ -128,6 +127,7 @@ class Array (DataStructure):
     def delete(self, data: DataType) -> None:
         # Delete data from the values
         print(f"Deleting {data} from the values")
+        
         x= self.values.index(data) if data in self.values else -1
         if x != -1:
             self.values[x] = None
@@ -162,7 +162,12 @@ class Array (DataStructure):
          screen.blit(FONT_S2.render(txt, True, WHITE), (25, 10))
          txt_surf = FONT_S3.render(self.input_text, True, WHITE)
          screen.blit(txt_surf, (self.input_box_element.x+5, self.input_box_element.y+5))
-         pygame.draw.rect(screen, self.color, self.input_box_element, 2)
+         clr=None
+         if self.active2:
+             clr= self.color_active
+         else:
+             clr=self.color_inactive
+         pygame.draw.rect(screen, clr, self.input_box_element, 2)
          for btn in self.interface_Btns:
              btn.display(screen)
         now = pygame.time.get_ticks()
@@ -211,7 +216,7 @@ class Array (DataStructure):
         self.rects = [
             pygame.Rect(
                 LEFT_MARGIN + i*(cell_w+SPACING),
-                TOP_MARGIN,
+                self.top_Margin,
                 cell_w,
                 CELL_HEIGHT
             )
@@ -221,7 +226,7 @@ class Array (DataStructure):
         self.id_rects = [
             pygame.Rect(
                 LEFT_MARGIN + i*(cell_w+SPACING),
-                TOP_MARGIN + CELL_HEIGHT + 15,
+                self.top_Margin + CELL_HEIGHT + 15,
                 cell_w,
                 30
             )

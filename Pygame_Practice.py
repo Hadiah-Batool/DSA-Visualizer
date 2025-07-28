@@ -29,7 +29,7 @@ while True:
     # 1) handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.quit();
+            pygame.quit()
             sys.exit()
         menu.HandleEvents(event)
 
