@@ -23,6 +23,7 @@ class MenuObj:
         self.linked_list = LinkedList()
         self.Stack=stack()
         self.Array_Based_Stack= Stack_Array_Based()
+        self.LL_Based_Stack= Stack_LinkedList_Based()
         i=80
         for B in self.ds_options:
             btn = Button(250, i, r'DSA_Visualizer\B_Pink.png', B, 30, 220, 110)
@@ -50,9 +51,16 @@ class MenuObj:
             "At Tail": self.go_AtTail,
             "At Index": self.go_AtIndx,
             "Stacks" : self.go_to_Stack_Choose_Opt, 
-            " Array Based Stack": self.go_to_Arr_Stack
+            " Array Based Stack": self.go_to_Arr_Stack,
+            "  Linked List Based Stack":self.go_to_LinkedListBasedStack
+
 
         }
+    def go_to_LinkedListBasedStack_Interface(self):
+        self.state="LinkedListBasedStack_Interface"
+    def go_to_LinkedListBasedStack(self):
+        self.state="  Linked List Based Stack"
+    
     def go_to_Arr_Stack_Interface(self):
         self.state= "Array Stack Interface"
     def go_to_Arr_Stack(self):
@@ -191,6 +199,12 @@ class MenuObj:
         elif self.state =="Array Stack Interface":
             button_list= self.Array_Based_Stack.array.interface_Btns
             self.Array_Based_Stack.array.Take_input(event)
+        elif self.state=="  Linked List Based Stack":
+            button_list=self.LL_Based_Stack.dataType_Btns
+        elif self.state=="LinkedListBasedStack_Interface":
+            
+            self.LL_Based_Stack.HandleInput(event)
+            button_list= self.LL_Based_Stack.interface_Btns
         else:
             button_list = self.Menu_Btns  
 
@@ -206,8 +220,8 @@ class MenuObj:
                 elif self.state == "Array Interface" and btn.text == "Clear":
                     self.array.Clear()
                 elif self.state == "Linked Lists" and btn.text in ["Integer", "Float", "String", "Char"]:
-                    self.go_to_linked_list_interface()
                     self.linked_list.dataType = btn.text
+                    self.go_to_linked_list_interface()
                     return
                 elif self.state == "Linked List Interface" and btn.text in ["Insert", "Delete", "Search"]:
                     btn.amClicked=True
@@ -221,11 +235,22 @@ class MenuObj:
                         self.Array_Based_Stack.array.insert(self.Array_Based_Stack.array.val)
                     elif (btn.text=="Pop"):
                         self.Array_Based_Stack.array.delete(self.Array_Based_Stack.array.values[(self.Array_Based_Stack.array.current_Count)-1])
-                    if(btn.text=="Clear"):
+                    elif(btn.text=="Clear"):
                         self.Array_Based_Stack.array.Clear()
 
-
-                    
+                elif self.state == "  Linked List Based Stack" and btn.text in ["Integer", "Float", "String", "Char"]:
+                    self.LL_Based_Stack.dataType = btn.text
+                    self.go_to_LinkedListBasedStack_Interface()
+                    return
+                elif self.state=="LinkedListBasedStack_Interface" and btn.text in ["Push", "Pop", "Clear"]:
+                    print("HALOOOO")
+                    if (btn.text=="Push"):
+                        self.LL_Based_Stack.insert_at_head(self.LL_Based_Stack.val)
+                    elif (btn.text=="Pop"):
+                        self.LL_Based_Stack.remove_At_Head()
+                    elif(btn.text=="Clear"):
+                        self.LL_Based_Stack.Clear()
+                   
                 else:
                     btn.amClicked=False
 
@@ -287,7 +312,6 @@ class MenuObj:
         elif self.state == "Linked List Interface" :
             self.linked_list.Draw_Buttons(self.screen)
             if self.linked_list.inDisplayBoxes:
-
                 self.linked_list.Draw_Where_To_Buttons(self.screen)
                 self.linked_list.Draw_Inp_Box(self.screen)
             if len(self.linked_list.values)>0 :
@@ -301,6 +325,15 @@ class MenuObj:
                 btn.display(self.screen)
         elif self.state=="Array Stack Interface":
             self.Array_Based_Stack.Display(self.screen)
+        elif self.state == "  Linked List Based Stack":
+            self.LL_Based_Stack.AskUser(self.screen)
+        elif self.state=="LinkedListBasedStack_Interface":
+            self.LL_Based_Stack.Draw_Buttons(self.screen)
+            self.LL_Based_Stack.Draw_Inp_Box(self.screen)
+            self.LL_Based_Stack.Calculate_Node_Positions()
+            self.LL_Based_Stack.Draw(self.screen)
+        
+
         
 
 

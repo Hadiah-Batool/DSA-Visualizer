@@ -12,12 +12,12 @@ class AnimatedNode:
     
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, self.pos, self.radius)
-        text_surface = FONT_S3.render(str(self.val), True, WHITE)
+        text_surface = FONT_S2.render(str(self.val), True, WHITE)
         screen.blit(text_surface, (self.pos[0] - text_surface.get_width() // 2, self.pos[1] - text_surface.get_height() // 2))
 
-class LinkedList(DataStructure):
+class LinkedList:
     def __init__(self):
-        super().__init__()
+        # super().__init__()
         self.head = None
         self.tail = None
         self.size = 0
@@ -39,14 +39,15 @@ class LinkedList(DataStructure):
         self.In_Indx = False
         self.inDisplayBoxes=False
         self.dataType=''
+        self.Screen_Height=800
 
         self.interface_Btns = [
-            Button(5, 0, r'DSA_Visualizer/B_Red.png', "Insert", 28, 160, 80),
-            Button(5, 50, r'DSA_Visualizer/B_Red.png', "Delete", 28, 160, 80),
-            Button(5, 100, r'DSA_Visualizer/B_Red.png', "Search", 28, 160, 80)
+            Button(5, 0, r'DSA_Visualizer\B_Red.png', "Insert", 28, 160, 80),
+            Button(5, 50, r'DSA_Visualizer\B_Red.png', "Delete", 28, 160, 80),
+            Button(5, 100, r'DSA_Visualizer\B_Red.png', "Search", 28, 160, 80)
         ]
 
-        self.Go_Button= Button(500, 250, r'DSA_Visualizer\B_Sq.png', "GO", 32, 100, 100)
+        
         self.data_Type_dict = {"Integer": int,
                              "Float": float,
                              "String": str,
@@ -69,7 +70,7 @@ class LinkedList(DataStructure):
             self.nodes.append(AnimatedNode())
         
         margin=50
-        y= SCREEN_HEIGHT//2
+        y= self.Screen_Height//2
         if(n>1):
          spacing = (SCREEN_WIDTH - 2 * margin) / (n - 1)
         # elif(n<4 and n>1):
@@ -84,7 +85,7 @@ class LinkedList(DataStructure):
             else:
                 node.value=0
             node.pos = (int(x), int(y))
-            node.radius = int(min(35, spacing / 2.5)) if n > 1 else 35
+            node.radius = int(min(40, spacing / 2.5)) if n > 1 else 40
         
 
 
@@ -145,6 +146,7 @@ class LinkedList(DataStructure):
         x= self.values[0]
         self.values.remove(x)
         print(f"Removed{x}")
+        self.text = ''
 
 
     def remove_At_Tail(self):
@@ -161,6 +163,7 @@ class LinkedList(DataStructure):
     def insert_at_head(self, data: DataType) -> None:
         self.values.insert(0, data)
         print(f"Inserting {data} at the head of the linked list.")
+        self.text = ''
 
 
     def insert_at_tail(self, data: DataType) -> None:
