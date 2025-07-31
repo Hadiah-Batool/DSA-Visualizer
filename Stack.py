@@ -53,8 +53,8 @@ class Stack_LinkedList_Based(LinkedList):
             Button(550, 0, r'DSA_Visualizer/B_Red.png', "Clear",32, 200, 100)
         ]
         #1 boxes for  value 
-        self.input_box= pygame.Rect(0, 40, 140, 80)
-        self.top_Box = pygame.Rect(620, 100, 175, 100)
+        self.input_box= pygame.Rect(10, 10, 140, 80)
+        self.top_Box = pygame.Rect(10, 120, 140, 80)
 
     def HandleInput(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -105,6 +105,26 @@ class Stack_LinkedList_Based(LinkedList):
         screen.blit(txt_surface, (self.input_box.x + 5, self.input_box.y + 5))
         if self.active1:
             pygame.draw.rect(screen, self.color_active, self.input_box, 3)
+
+        pygame.draw.rect(screen, D_GREEN, self.top_Box, 3)
+        Top_Surface= FONT_S2.render("Top", True, WHITE)
+        if(len(self.values)==0):
+            pygame.draw.line(screen, D_GREEN, (10, 120), (150, 195), 4)
+        elif(len(self.nodes)!=0):
+            x1, y1= 80, 160
+            x2, y2= self.nodes[0].pos
+            start = (x1, y1)
+            end = (x2, y2 - self.nodes[0].radius)
+            pygame.draw.line(screen, L_RED, start, end, 3)
+            angle = math.atan2(y2 - y1, x2 - x1)
+            arrow_size = 12
+            left = (end[0] - arrow_size * math.cos(angle - math.pi/6),
+                end[1] - arrow_size * math.sin(angle - math.pi/6))
+            right = (end[0] - arrow_size * math.cos(angle + math.pi/6),
+                 end[1] - arrow_size * math.sin(angle + math.pi/6))
+            pygame.draw.polygon(screen, L_RED, [end, left, right])
+
+        screen.blit(Top_Surface, (self.top_Box.x, self.top_Box.y+75))
     def Clear(self):
         self.nodes = []
         self.values = []        

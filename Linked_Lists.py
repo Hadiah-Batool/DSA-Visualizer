@@ -198,6 +198,7 @@ class LinkedList:
     
 
     def Draw(self, screen) -> None:
+         self.Calculate_Node_Positions()
          for n in self.nodes:
             x, y = n.pos
             pygame.draw.circle(screen, n.color, (x, y), n.radius)
