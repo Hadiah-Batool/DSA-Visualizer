@@ -4,6 +4,7 @@ from UIProperties import *
 from Arrays import Array
 from Linked_Lists import LinkedList
 from Stack import *
+from Binary_Tree import Trees
 pygame.init()
 temp= pygame.image.load(r'D:\Hadia\Python\DSA_Visualizer\HomeScreen_Bg.png')
 Bg_Start= pygame.transform.smoothscale(temp, (800, 600))
@@ -18,10 +19,11 @@ class MenuObj:
         self.Menu_Btns= btns
         self.selec_Btns= selecButtons
         self.state = "main"    # other possible value: "options"
-        self.ds_options=['Arrays', 'Linked Lists', 'Stacks', 'Queues', 'Trees', 'Heaps']
+        self.ds_options=['Arrays', 'Linked Lists', 'Stacks', 'Trees', 'Queues', 'Heaps']
         self.ds_Btns = []
         self.linked_list = LinkedList()
         self.Stack=stack()
+        self.tree = Trees()
         self.Array_Based_Stack= Stack_Array_Based()
         self.LL_Based_Stack= Stack_LinkedList_Based()
         i=80
@@ -52,10 +54,14 @@ class MenuObj:
             "At Index": self.go_AtIndx,
             "Stacks" : self.go_to_Stack_Choose_Opt, 
             " Array Based Stack": self.go_to_Arr_Stack,
-            "  Linked List Based Stack":self.go_to_LinkedListBasedStack
+            "  Linked List Based Stack":self.go_to_LinkedListBasedStack,
+            "Trees": self.go_to_trees
 
 
         }
+    def go_to_trees(self):
+        self.state="Trees_Opt_Choose"
+    
     def go_to_LinkedListBasedStack_Interface(self):
         self.state="LinkedListBasedStack_Interface"
     def go_to_LinkedListBasedStack(self):
@@ -205,6 +211,9 @@ class MenuObj:
             
             self.LL_Based_Stack.HandleInput(event)
             button_list= self.LL_Based_Stack.interface_Btns
+        elif self.state=="Trees_Opt_Choose":
+            button_list= self.tree.Buttons
+
         else:
             button_list = self.Menu_Btns  
 
@@ -332,6 +341,8 @@ class MenuObj:
             self.LL_Based_Stack.Draw_Inp_Box(self.screen)
             self.LL_Based_Stack.Calculate_Node_Positions()
             self.LL_Based_Stack.Draw(self.screen)
+        elif self.state=="Trees_Opt_Choose":
+            self.tree.display(self.screen)
         
 
         

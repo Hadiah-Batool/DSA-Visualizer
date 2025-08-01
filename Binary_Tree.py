@@ -2,6 +2,18 @@ import pygame, math
 pygame.init()
 from UIProperties import *
 from Buttons import Button
+class Trees:
+    def __init__(self):
+
+        self.Buttons=[Button(200, 150, r'DSA_Visualizer\B_Sk_Blu.png', "  Binary Search Tree", 36, 360, 180),
+                      Button(200, 270, r'DSA_Visualizer\B_Pink.png', "AVL Tree", 36, 360, 180),
+                      Button(200, 390, r"DSA_Visualizer\B_DedBlu.png", "Red Black Tree",36, 360, 180)
+                      ]
+    def display(self, screen):
+        txt="Choose a type of tree."
+        screen.blit(FONT_S2.render(txt, True, WHITE, PURPLE),(140, 70))
+        for b in self.Buttons:
+            b.display(screen)
 class Node:
     def __init__(self, key):
         self.left = None
