@@ -12,7 +12,7 @@ class AnimatedNode:
     
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, self.pos, self.radius)
-        text_surface = FONT_S2.render(str(self.val), True, WHITE)
+        text_surface = FONT_S4.render(str(self.val), True, WHITE)
         screen.blit(text_surface, (self.pos[0] - text_surface.get_width() // 2, self.pos[1] - text_surface.get_height() // 2))
 
 class LinkedList:
@@ -43,8 +43,8 @@ class LinkedList:
 
         self.interface_Btns = [
             Button(5, 0, r'DSA_Visualizer\B_Red.png', "Insert", 28, 160, 80),
-            Button(5, 50, r'DSA_Visualizer\B_Red.png', "Delete", 28, 160, 80),
-            Button(5, 100, r'DSA_Visualizer\B_Red.png', "Search", 28, 160, 80)
+            Button(5, 60, r'DSA_Visualizer\B_Red.png', "Delete", 28, 160, 80),
+            Button(5, 120, r'DSA_Visualizer\B_Red.png', "Search", 28, 160, 80)
         ]
 
         
@@ -202,7 +202,7 @@ class LinkedList:
          for n in self.nodes:
             x, y = n.pos
             pygame.draw.circle(screen, n.color, (x, y), n.radius)
-            label = FONT_S2.render(str(n.value), True, L_RED)
+            label = FONT_S3.render(str(n.value), True, L_RED)
             rect = label.get_rect(center=(x, y))
             screen.blit(label, rect)
          for i in range(len(self.nodes) - 1):
