@@ -290,7 +290,7 @@ class Animated_BST:
         node.highlighted = True
         self.draw(screen)
         pygame.display.update()
-        pygame.time.wait(1000)        #second pause
+        pygame.time.wait(750)        #second pause
             # unmark it (or leave marked if found)
         node.highlighted = False
 
