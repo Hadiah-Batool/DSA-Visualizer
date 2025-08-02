@@ -282,7 +282,7 @@ class MenuObj:
                         self.BST.Insertion_Animated( self.screen, self.BST.val  )
                         self.BST.text=""
                     elif btn.text=="Delete":
-                        self.BST.values.delete(self.BST.val)
+                        self.BST.delete(self.BST.val, self.screen)
                         self.BST.text=""
                     elif btn.text=="Search":
                         self.BST.search_animated(self.screen, self.BST.val)

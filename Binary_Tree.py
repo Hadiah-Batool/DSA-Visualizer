@@ -37,11 +37,7 @@ class Binary_Search_Tree:
 
     def _insert_recursive(self, node, key):
         node.highlighted = True
-        # self.draw(screen)
-        # pygame.display.update()
-        # pygame.time.wait(1000)        #second pause
-        #     # unmark it (or leave marked if found)
-        # node.highlighted = False
+
 
         if key < node.val:
             if node.left is None:
@@ -311,6 +307,39 @@ class Animated_BST:
         else:
             self._insert_recursive(self.values.root, key, screen)
 
+
+    def delete(self, key, screen):
+        self.root = self._delete_recursive(self.values.root, key, screen)
+
+    def _delete_recursive(self, node, key, screen):
+        node.highlighted = True
+        self.draw(screen)
+        pygame.display.update()
+        pygame.time.wait(750)        #second pause
+            # unmark it (or leave marked if found)
+        node.highlighted = False
+        if node is None:
+            return node
+
+        if key < node.val:
+            node.left = self._delete_recursive(node.left, key, screen)
+        elif key > node.val:
+            node.right = self._delete_recursive(node.right, key, screen)
+        else:
+            # Node with only one child or no child
+            if node.left is None:
+                return node.right
+            elif node.right is None:
+                return node.left
+            
+            # Node with two children
+            # Get the inorder successor (smallest in right subtree)
+            temp = self._min_value_node(node.right)
+            node.val = temp.val
+            # Delete the inorder successor
+            node.right = self._delete_recursive(node.right, temp.val, screen)
         
+        return node
+
 
 
