@@ -4,7 +4,7 @@ from UIProperties import *
 from Arrays import Array
 from Linked_Lists import LinkedList
 from Stack import *
-from Binary_Tree import Trees
+from Binary_Tree import *
 pygame.init()
 temp= pygame.image.load(r'D:\Hadia\Python\DSA_Visualizer\HomeScreen_Bg.png')
 Bg_Start= pygame.transform.smoothscale(temp, (800, 600))
@@ -24,6 +24,7 @@ class MenuObj:
         self.linked_list = LinkedList()
         self.Stack=stack()
         self.tree = Trees()
+        self.BST= Animated_BST()  
         self.Array_Based_Stack= Stack_Array_Based()
         self.LL_Based_Stack= Stack_LinkedList_Based()
         i=80
@@ -55,10 +56,16 @@ class MenuObj:
             "Stacks" : self.go_to_Stack_Choose_Opt, 
             " Array Based Stack": self.go_to_Arr_Stack,
             "  Linked List Based Stack":self.go_to_LinkedListBasedStack,
-            "Trees": self.go_to_trees
+            "Trees": self.go_to_trees, 
+            "  Binary Search Tree" : self.go_to_BST
 
 
         }
+    def go_to_BST_interface(self):
+        self.state= "BST Interface"
+    def go_to_BST(self):
+        self.state= "BST"
+    
     def go_to_trees(self):
         self.state="Trees_Opt_Choose"
     
@@ -213,6 +220,12 @@ class MenuObj:
             button_list= self.LL_Based_Stack.interface_Btns
         elif self.state=="Trees_Opt_Choose":
             button_list= self.tree.Buttons
+        elif self.state== "BST":
+            button_list= self.BST.dataType_Btns
+        elif self.state=="BST Interface":
+            self.BST.HandleInput(event)
+            button_list= self.BST.interface_Btns
+            
 
         else:
             button_list = self.Menu_Btns  
@@ -259,7 +272,10 @@ class MenuObj:
                         self.LL_Based_Stack.remove_At_Head()
                     elif(btn.text=="Clear"):
                         self.LL_Based_Stack.Clear()
-                   
+                elif(self.state == "BST" and btn.text in ["Integer", "Float", "String", "Char"]):
+                    self.BST.dataType = btn.text       
+                    self.go_to_BST_interface()    
+                    return          
                 else:
                     btn.amClicked=False
 
@@ -343,6 +359,12 @@ class MenuObj:
             self.LL_Based_Stack.Draw(self.screen)
         elif self.state=="Trees_Opt_Choose":
             self.tree.display(self.screen)
+        elif self.state=="BST":
+                self.BST.AskUser(self.screen)
+        elif self.state=="BST Interface":
+            self.BST.Draw_Inp_Box(self.screen)
+            self.BST.Draw_Buttons(self.screen)
+            
         
 
         

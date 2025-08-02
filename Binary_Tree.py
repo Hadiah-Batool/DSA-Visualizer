@@ -7,7 +7,7 @@ class Trees:
 
         self.Buttons=[Button(200, 150, r'DSA_Visualizer\B_Sk_Blu.png', "  Binary Search Tree", 36, 360, 180),
                       Button(200, 270, r'DSA_Visualizer\B_Pink.png', "AVL Tree", 36, 360, 180),
-                      Button(200, 390, r"DSA_Visualizer\B_DedBlu.png", "Red Black Tree",36, 360, 180)
+                      Button(200, 390, r"DSA_Visualizer\B_Purp.png", "Red Black Tree",36, 360, 180)
                       ]
     def display(self, screen):
         txt="Choose a type of tree."
@@ -20,6 +20,7 @@ class Node:
         self.right = None
         self.val = key
         self.isRoot=False
+        
 
 class Binary_Search_Tree:
     def __init__(self):
@@ -102,7 +103,7 @@ class Animated_BST:
     def __init__(self):
          self.nodes = []
          self.values = Binary_Search_Tree()
-         self.input_box= pygame.Rect(200, 100, 140, 50)   
+         self.input_box= pygame.Rect(10, 10, 140, 70)  
          self.color_active = L_GREEN
          self.color_inactive = DED_GREEN
          self.color = self.color_inactive
@@ -110,10 +111,11 @@ class Animated_BST:
          self.active2 = False # for index input
          self.text = ''
          self.val = None
+         self.dataType = None
          self.interface_Btns = [
-            Button(5, 0, r'DSA_Visualizer\B_Pink.png', "Insert", 28, 160, 80),
-            Button(5, 60, r'DSA_Visualizer\B_Pink.png', "Delete", 28, 160, 80),
-            Button(5, 120, r'DSA_Visualizer\B_Pink.png', "Search", 28, 160, 80)
+            Button(155, 0, r'DSA_Visualizer\B_Pink.png', "Insert", 32, 200, 100),
+            Button(355, 0, r'DSA_Visualizer\B_Pink.png', "Delete",32, 200, 100),
+            Button(555, 0, r'DSA_Visualizer\B_Pink.png', "Search", 32, 200, 100)
         ]
          self.data_Type_dict = {"Integer": int,
                              "Float": float,
@@ -140,8 +142,10 @@ class Animated_BST:
                 self.active1 = True
             else:
                 self.active1 = False
-            if event.type == pygame.KEYDOWN:
-             if self.active1:
+
+
+        if event.type == pygame.KEYDOWN:
+            if self.active1:
                 if event.key == pygame.K_RETURN:
                     
                     try:
@@ -162,10 +166,10 @@ class Animated_BST:
         Ins1_surface = FONT_S3.render(Ins1, True, WHITE)
         Ins2_surface = FONT_S3.render(Ins2, True, WHITE)
         Ins3_surface = FONT_S3.render(Ins3, True, WHITE)
-        screen.blit(Ins1_surface, (630, 10))
-        screen.blit(Ins2_surface, (630, 30))
-        screen.blit(Ins3_surface, (630, 50))
-        r= pygame.Rect(620, 10, 175, 80)
+        screen.blit(Ins1_surface, (630, 110))
+        screen.blit(Ins2_surface, (630, 130))
+        screen.blit(Ins3_surface, (630, 150))
+        r= pygame.Rect(620, 100, 175, 100)
         pygame.draw.rect(screen, YELLOW, r, 3)
         """ Draw the input box for value"""
         if self.active1:
@@ -175,27 +179,15 @@ class Animated_BST:
         y="Input Value"
         pygame.draw.rect(screen, self.color, self.input_box, 3)
         txt_surface = FONT_S2.render(self.text, True, WHITE)
-        y_surface = FONT_S4.render(y, True, WHITE)
-        screen.blit(y_surface, (self.input_box.x, self.input_box.y + 50))
+        print(f"self.txt{self.text}")
+        y_surface = FONT_S3.render(y, True, WHITE)
+        screen.blit(y_surface, (self.input_box.x, self.input_box.y + 80))
         screen.blit(txt_surface, (self.input_box.x + 5, self.input_box.y + 5))
         if self.active1:
             pygame.draw.rect(screen, self.color_active, self.input_box, 3)
-        """ Draw the input box for index if active"""
-        clr=None
 
-        if self.active2:
-            clr = self.color_active
-        else:
-            clr = self.color_inactive
+    def Draw_Buttons(self, screen):
+        for btn in self.interface_Btns:
+            btn.display(screen)
 
-        """ Draw the input box for index"""
-        x="Input Index"
-        pygame.draw.rect(screen, clr, self.index_input_box, 3)
-        idx_surface = FONT_S2.render(self.idx_txt, True, WHITE)
-        x_surface = FONT_S4.render(x, True, WHITE)
-
-        screen.blit(x_surface, (self.index_input_box.x , self.index_input_box.y + 50))
-        screen.blit(idx_surface, (self.index_input_box.x + 5, self.index_input_box.y + 5))
-        if self.In_Indx:
-            pygame.draw.rect(screen, clr, self.index_input_box, 3)
 
