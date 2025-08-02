@@ -178,7 +178,8 @@ class MenuObj:
                     screen.fill(BLACK_1)
 
     def HandleEvents(self, event):
-        print(self.state)
+        print("BST")
+        self.BST.values.print_tree()
         """ Handle all events in the menu"""
         if event.type not in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION, pygame.KEYDOWN, pygame.QUIT):
             return
@@ -276,6 +277,18 @@ class MenuObj:
                     self.BST.dataType = btn.text       
                     self.go_to_BST_interface()    
                     return          
+                elif (self.state=="BST Interface" and btn.text in ["Insert", "Delete", "Search"] ):
+                    if btn.text =="Insert":
+                        self.BST.Insertion_Animated( self.screen, self.BST.val  )
+                        self.BST.text=""
+                    elif btn.text=="Delete":
+                        self.BST.values.delete(self.BST.val)
+                        self.BST.text=""
+                    elif btn.text=="Search":
+                        self.BST.search_animated(self.screen, self.BST.val)
+                        self.BST.text=""
+                     
+
                 else:
                     btn.amClicked=False
 
@@ -364,6 +377,7 @@ class MenuObj:
         elif self.state=="BST Interface":
             self.BST.Draw_Inp_Box(self.screen)
             self.BST.Draw_Buttons(self.screen)
+            self.BST.draw(self.screen)
             
         
 
