@@ -27,6 +27,7 @@ class MenuObj:
         self.BST= Animated_BST()  
         self.Array_Based_Stack= Stack_Array_Based()
         self.LL_Based_Stack= Stack_LinkedList_Based()
+        self.AVL_Tree= Animated_AVL_Tree()
         i=80
         for B in self.ds_options:
             btn = Button(250, i, r'DSA_Visualizer\B_Pink.png', B, 30, 220, 110)
@@ -57,10 +58,16 @@ class MenuObj:
             " Array Based Stack": self.go_to_Arr_Stack,
             "  Linked List Based Stack":self.go_to_LinkedListBasedStack,
             "Trees": self.go_to_trees, 
-            "  Binary Search Tree" : self.go_to_BST
+            "  Binary Search Tree" : self.go_to_BST,
+            "AVL Tree": self.go_to_AVL_Tree
 
 
         }
+    def go_to_AVL_Tree(self):
+        self.state="AVL_Tree"
+    def go_to_AVL_Interface(self):
+        self.state="AVL_Interface"
+
     def go_to_BST_interface(self):
         self.state= "BST Interface"
     def go_to_BST(self):
@@ -178,8 +185,8 @@ class MenuObj:
                     screen.fill(BLACK_1)
 
     def HandleEvents(self, event):
-        print("BST")
-        self.BST.values.print_tree()
+        print("AVL")
+        self.AVL_Tree.values.print_inorder()
         """ Handle all events in the menu"""
         if event.type not in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION, pygame.KEYDOWN, pygame.QUIT):
             return
@@ -226,6 +233,11 @@ class MenuObj:
         elif self.state=="BST Interface":
             self.BST.HandleInput(event)
             button_list= self.BST.interface_Btns
+        elif self.state=="AVL_Tree":
+            button_list= self.AVL_Tree.dataType_Btns
+        elif self.state=="AVL_Interface":
+            self.AVL_Tree.HandleInput(event)
+            button_list= self.AVL_Tree.interface_Btns
             
 
         else:
@@ -287,7 +299,19 @@ class MenuObj:
                     elif btn.text=="Search":
                         self.BST.search_animated(self.screen, self.BST.val)
                         self.BST.text=""
-                     
+
+                elif(self.state == "AVL_Tree" and btn.text in ["Integer", "Float", "String", "Char"]):
+                    self.AVL_Tree.dataType = btn.text       
+                    self.go_to_AVL_Interface() 
+                    return
+                elif (self.state=="AVL_Interface" and btn.text in ["Insert", "Delete", "Search"] ):
+                    if btn.text =="Insert":
+                        self.AVL_Tree.Animated_Insert(self.screen)
+
+                    elif btn.text=="Delete":
+                        self.AVL_Tree.values.delete_key(self.AVL_Tree.val)
+                    elif btn.text=="Search":
+                        self.AVL_Tree.values.search_key(self.AVL_Tree.val)
 
                 else:
                     btn.amClicked=False
@@ -378,7 +402,12 @@ class MenuObj:
             self.BST.Draw_Inp_Box(self.screen)
             self.BST.Draw_Buttons(self.screen)
             self.BST.draw(self.screen)
-            
+        elif self.state=="AVL_Tree":
+                self.AVL_Tree.AskUser(self.screen ) 
+        elif self.state=="AVL_Interface":
+            self.AVL_Tree.Draw_Inp_Box(self.screen)
+            self.AVL_Tree.Draw_Buttons(self.screen)  
+            self.AVL_Tree.draw(self.screen)        
         
 
         
