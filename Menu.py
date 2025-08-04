@@ -307,11 +307,15 @@ class MenuObj:
                 elif (self.state=="AVL_Interface" and btn.text in ["Insert", "Delete", "Search"] ):
                     if btn.text =="Insert":
                         self.AVL_Tree.Animated_Insert(self.screen)
+                        self.AVL_Tree.text=""
 
                     elif btn.text=="Delete":
-                        self.AVL_Tree.values.delete_key(self.AVL_Tree.val)
+                        # self.AVL_Tree.values.delete_key(self.AVL_Tree.val)
+                        self.AVL_Tree.Delete_Animation(self.screen)
+                        self.AVL_Tree.text=""
                     elif btn.text=="Search":
                         self.AVL_Tree.values.search_key(self.AVL_Tree.val)
+                        
 
                 else:
                     btn.amClicked=False

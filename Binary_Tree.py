@@ -23,6 +23,7 @@ class Node:
         self.left = None
         self.right = None
         self.isRoot = False
+        
 
 class Binary_Search_Tree:
     def __init__(self):
@@ -111,6 +112,7 @@ class Visual_BST_Node:
         self.color= WHITE
         self.radius = 30
         self.highlighted=False
+        self.Balance_Factor=0
     
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, self.pos, self.radius)
@@ -346,6 +348,7 @@ class AVLNode:
         self.left = None
         self.right = None
         self.height = 1
+        self.Balance_Factor=0
 
 class AVLTree:
     def __init__(self):
@@ -367,6 +370,8 @@ class AVLTree:
         node.height = max(self.height(node.left), self.height(node.right)) + 1
     
     def right_rotate(self, y):
+        if y is None or y.left is None:
+            return y
         x = y.left
         T2 = x.right
         x.right = y
@@ -376,6 +381,8 @@ class AVLTree:
         return x
     
     def left_rotate(self, x):
+        if x is None or x.right is None:
+            return x
         y = x.right
         T2 = y.left
         y.left = x
@@ -526,10 +533,13 @@ class Animated_AVL_Node:
         self.color= WHITE
         self.radius = 30
         self.highlighted=False
+        self.Balance_Factor=0
     
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, self.pos, self.radius)
-        text_surface = FONT_S4.render(str(self.val), True, WHITE)
+        text_surface = FONT_S4.render(str(self.val), True, BLACK_1)
+        bf_surface= FONT_S4.render(str(self.Balance_Factor), True, WHITE)
+        screen.blit(bf_surface, ((self.pos[0] - text_surface.get_width() // 2)+10, self.pos[1] - text_surface.get_height()-30))
         screen.blit(text_surface, (self.pos[0] - text_surface.get_width() // 2, self.pos[1] - text_surface.get_height() // 2))
     
 class Animated_AVL_Tree:
@@ -631,8 +641,9 @@ class Animated_AVL_Tree:
             x = (x_min + x_max) // 2
             y = y_start + depth * level_gap
 
-            vis = Visual_BST_Node()
+            vis = Animated_AVL_Node()
             vis.val   = logical.key
+            vis.Balance_Factor= self.values.balance_factor(logical)
             vis.pos   = (x, y)
             # if we’ve marked this node as “highlighted” in an algorithm, pick a special color
             vis.color = PINK if getattr(logical, 'highlighted', False) else DED_GREEN
@@ -668,22 +679,13 @@ class Animated_AVL_Tree:
         if not root:
             node = AVLNode(key)
             self.values.root = self.values.root
-            self.calculate_positions(SCREEN_WIDTH)
-            vis = self.node_map.get(node)
-            if vis:
-                print("Heloo?")
-                vis.color = PINK
-                self.draw(screen);
-                pygame.display.update()
-                pygame.time.wait(1000)
-                vis.color = D_GREEN
             return node
     
         root.highlighted = True
         self.draw(screen)
         pygame.display.update()
         pygame.time.wait(1000)        
-            # unmark it (or leave marked if found)
+            # unmark it 
         root.highlighted = False
 
 
@@ -713,33 +715,149 @@ class Animated_AVL_Tree:
             new_root = self.values.right_rotate(root)  # logical rotate
             self.animate_rotation(old_root, new_root, screen)
             return new_root
-            
-            # print("Shi is left heavy so, rotate towards right")
-            # return self.values.right_rotate(root)
         
         
         # Right Right Case
         if balance < -1 and key > root.right.key:
-            print("Shi is right heavy so, rotate towards left")
-            return self.values.left_rotate(root)
+            old_root = root
+            new_root = self.values.left_rotate(root)  # logical rotate
+            self.animate_rotation(old_root, new_root, screen)
+            return new_root
         
         # Left Right Case
         if balance > 1 and key > root.left.key:
-            print("Shi is Left Right Case")
-            root.left = self.values.left_rotate(root.left)
-            return self.values.right_rotate(root)
+        # 1) First rotation on the left child
+            old_child = root.left
+            new_child = self.values.left_rotate(root.left)
+        # animate child rotation
+            self.animate_rotation(old_child, new_child, screen)
+            root.left = new_child
+
+        # 2) Then rotation at the root
+            old_root = root
+            new_root = self.values.right_rotate(root)
+        # animate root rotation
+            self.animate_rotation(old_root, new_root, screen)
+            return new_root
         
-        # Right Left Case
+        # Right-Left Case
         if balance < -1 and key < root.right.key:
-            print("Shi is Left Right Left")
-            root.right = self.values.right_rotate(root.right)
-            return self.values.left_rotate(root)
+        # 1) First rotation on the right child
+            old_child = root.right
+            new_child = self.values.right_rotate(root.right)
+        # animate child rotation
+            self.animate_rotation(old_child, new_child, screen)
+            root.right = new_child
+
+        # 2) Then rotation at the root
+            old_root = root
+            new_root = self.values.left_rotate(root)
+        # animate root rotation
+            self.animate_rotation(old_root, new_root, screen)
+            return new_root
         
         
         return root
 
     def Animated_Insert(self, screen):
         self.values.root= self.insert(self.values.root, self.val, screen)
+
+
+    def delete(self, root, key, screen):
+        if not root:
+            return root
+        
+        root.highlighted = True
+        self.draw(screen)
+        pygame.display.update()
+        pygame.time.wait(1000)        
+            # unmark it 
+        root.highlighted = False
+
+        if key < root.key:
+            root.left = self.delete(root.left, key, screen)
+        elif key > root.key:
+            root.right = self.delete(root.right, key, screen)
+        else:
+            # Node with only one child or no child
+            if not root.left:
+                temp = root.right
+                root = None
+                return temp
+            elif not root.right:
+                temp = root.left
+                root = None
+                return temp
+            
+            # Node with two children
+            temp = self.values.min_value_node(root.right)
+            root.key = temp.key
+            root.right = self.delete(root.right, temp.key, screen)
+        
+        if not root:
+            return root
+        
+        # Update height
+        self.values.update_height(root)
+        
+        # Get balance factor
+        balance = self.values.balance_factor(root)
+        
+        # Left Left Case
+        if balance > 1 and key < root.left.key:
+            old_root = root
+            new_root = self.values.right_rotate(root)  # logical rotate
+            self.animate_rotation(old_root, new_root, screen)
+            return new_root
+        
+        
+        # Right Right Case
+        if balance < -1 and key > root.right.key:
+            old_root = root
+            new_root = self.values.left_rotate(root)  # logical rotate
+            self.animate_rotation(old_root, new_root, screen)
+            return new_root
+        
+        # Left Right Case
+        if balance > 1 and key > root.left.key:
+        # 1) First rotation on the left child
+            old_child = root.left
+            new_child = self.values.left_rotate(root.left)
+        # animate child rotation
+            self.animate_rotation(old_child, new_child, screen)
+            root.left = new_child
+
+        # 2) Then rotation at the root
+            old_root = root
+            new_root = self.values.right_rotate(root)
+        # animate root rotation
+            self.animate_rotation(old_root, new_root, screen)
+            return new_root
+        
+        # Right-Left Case
+        if balance < -1 and key < root.right.key:
+        # 1) First rotation on the right child
+            old_child = root.right
+            new_child = self.values.right_rotate(root.right)
+        # animate child rotation
+            self.animate_rotation(old_child, new_child, screen)
+            root.right = new_child
+
+        # 2) Then rotation at the root
+            old_root = root
+            new_root = self.values.left_rotate(root)
+        # animate root rotation
+            self.animate_rotation(old_root, new_root, screen)
+            return new_root
+        
+        
+        return root
+    
+    def Delete_Animation(self, screen):
+        self.values.root = self.delete(self.values.root, self.val, screen)
+
+
+
     def animate_rotation(self, old_root, new_root, screen, frames=120):
         """
         Animate the subtree rotation that transformed `old_root` into `new_root`.
