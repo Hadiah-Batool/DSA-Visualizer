@@ -28,6 +28,7 @@ class MenuObj:
         self.Array_Based_Stack= Stack_Array_Based()
         self.LL_Based_Stack= Stack_LinkedList_Based()
         self.AVL_Tree= Animated_AVL_Tree()
+        self.Red_Black_Tree= Animated_Red_Black_Tree()
         i=80
         for B in self.ds_options:
             btn = Button(250, i, r'DSA_Visualizer\B_Pink.png', B, 30, 220, 110)
@@ -59,10 +60,18 @@ class MenuObj:
             "  Linked List Based Stack":self.go_to_LinkedListBasedStack,
             "Trees": self.go_to_trees, 
             "  Binary Search Tree" : self.go_to_BST,
-            "AVL Tree": self.go_to_AVL_Tree
+            "AVL Tree": self.go_to_AVL_Tree,
+            "Red Black Tree": self.go_to_RBTree
+
 
 
         }
+    
+    def go_to_RBT_Interface(self):
+        self.state="RBT_Interface"
+
+    def go_to_RBTree(self):
+        self.state="RB Tree"
     def go_to_AVL_Tree(self):
         self.state="AVL_Tree"
     def go_to_AVL_Interface(self):
@@ -185,8 +194,8 @@ class MenuObj:
                     screen.fill(BLACK_1)
 
     def HandleEvents(self, event):
-        print("AVL")
-        self.AVL_Tree.values.print_inorder()
+        print("RBTREE")
+        print(self.Red_Black_Tree.values.inorder_traversal())
         """ Handle all events in the menu"""
         if event.type not in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION, pygame.KEYDOWN, pygame.QUIT):
             return
@@ -238,6 +247,11 @@ class MenuObj:
         elif self.state=="AVL_Interface":
             self.AVL_Tree.HandleInput(event)
             button_list= self.AVL_Tree.interface_Btns
+        elif self.state=="RB Tree":
+            button_list= self.Red_Black_Tree.dataType_Btns
+        elif self.state=="RBT_Interface":
+            self.Red_Black_Tree.HandleInput(event)
+            button_list= self.Red_Black_Tree.interface_Btns
             
 
         else:
@@ -278,7 +292,6 @@ class MenuObj:
                     self.go_to_LinkedListBasedStack_Interface()
                     return
                 elif self.state=="LinkedListBasedStack_Interface" and btn.text in ["Push", "Pop", "Clear"]:
-                    print("HALOOOO")
                     if (btn.text=="Push"):
                         self.LL_Based_Stack.insert_at_head(self.LL_Based_Stack.val)
                     elif (btn.text=="Pop"):
@@ -315,7 +328,22 @@ class MenuObj:
                         self.AVL_Tree.text=""
                     elif btn.text=="Search":
                         self.AVL_Tree.values.search_key(self.AVL_Tree.val)
-                        
+                elif(self.state=="RB Tree" and btn.text in ["Integer", "Float", "String", "Char"]):
+                    self.Red_Black_Tree.dataType= btn.text
+                    self.go_to_RBT_Interface()
+                    return
+                elif self.state=="RBT_Interface"  and btn.text in ["Insert", "Delete", "Search"]:
+                    if btn.text =="Insert":
+                        self.Red_Black_Tree.values.insert(self.Red_Black_Tree.val)
+                        self.Red_Black_Tree.text=""
+
+                    elif btn.text=="Delete":
+                        self.Red_Black_Tree.values.delete(self.Red_Black_Tree.val)
+                        self.Red_Black_Tree.text=""
+                    elif btn.text=="Search":
+                        self.Red_Black_Tree.values._search(self.Red_Black_Tree.val)
+                        self.Red_Black_Tree.text=""
+
 
                 else:
                     btn.amClicked=False
@@ -411,7 +439,14 @@ class MenuObj:
         elif self.state=="AVL_Interface":
             self.AVL_Tree.Draw_Inp_Box(self.screen)
             self.AVL_Tree.Draw_Buttons(self.screen)  
-            self.AVL_Tree.draw(self.screen)        
+            self.AVL_Tree.draw(self.screen) 
+        elif self.state=="RB Tree":
+            self.Red_Black_Tree.AskUser(self.screen)
+        elif self.state=="RBT_Interface":
+            self.Red_Black_Tree.Draw_Inp_Box(self.screen)
+            self.Red_Black_Tree.Draw_Buttons(self.screen)  
+            self.Red_Black_Tree.draw(self.screen)                
+            
         
 
         
