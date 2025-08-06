@@ -704,7 +704,7 @@ class Animated_AVL_Tree:
 
         self.draw(screen)
         pygame.display.update()
-        pygame.time.wait(500)        
+        pygame.time.wait(1000)        
 
 
 
@@ -1257,7 +1257,7 @@ class Animated_Red_Black_Tree:
             # center this node in [x_min, x_max]
             x = (x_min + x_max) // 2
             y = y_start + depth * level_gap
-
+ 
             vis = Animated_RBTree_Node()
             vis.val   = logical.key
             vis.pos   = (x, y)

@@ -1,4 +1,4 @@
-import pygame, sys, math
+import pygame
 from UIProperties import *
 pygame.init()
 from Data_Structures import *
@@ -70,7 +70,7 @@ class Array (DataStructure):
                         self.size = size
                         self.values = [None] * size  # Initialize the values with None
                         print(f"values size set to: {size}")
-                        print("Initializing Shi")
+                        
                         self.InitializeRects()
                     except ValueError:
                         print("Invalid input. Please enter a number.")
@@ -187,7 +187,7 @@ class Array (DataStructure):
                 if(self.size< 10):
                     txt = FONT_S2.render(str(self.values[i]), True, WHITE)
                 else:
-                    txt = FONT_S4.render(str(self.values[i]), True, WHITE)
+                    txt = FONT_S3.render(str(self.values[i]), True, WHITE)
                 txt_rect = txt.get_rect(center=rect.center)
                 screen.blit(txt, txt_rect)
         for i, rect in enumerate(self.id_rects):

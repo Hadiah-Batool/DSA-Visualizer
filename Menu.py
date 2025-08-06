@@ -5,6 +5,7 @@ from Arrays import Array
 from Linked_Lists import LinkedList
 from Stack import *
 from Binary_Tree import *
+from Algorithms import *
 pygame.init()
 temp= pygame.image.load(r'D:\Hadia\Python\DSA_Visualizer\HomeScreen_Bg.png')
 Bg_Start= pygame.transform.smoothscale(temp, (800, 600))
@@ -29,6 +30,8 @@ class MenuObj:
         self.LL_Based_Stack= Stack_LinkedList_Based()
         self.AVL_Tree= Animated_AVL_Tree()
         self.Red_Black_Tree= Animated_Red_Black_Tree()
+        self.Sorting_Algos= Sorting_Algos()
+        self.Bubble_Sort= Bubble_Sort()
         i=80
         for B in self.ds_options:
             btn = Button(250, i, r'DSA_Visualizer\B_Pink.png', B, 30, 220, 110)
@@ -36,8 +39,15 @@ class MenuObj:
             i += 80
 
         self.algo_options=['Sorting Algorithms', '  Searching Algorithms']
-        # 2) map button texts to the methods that should run
+        
         self.algo_Btns = []
+        i=100
+        for B in self.algo_options:
+            btn = Button(170, i, r'DSA_Visualizer\B_Red.png', B, 48, 510, 255)
+            self.algo_Btns.append(btn)
+            btn.display(self.screen)
+            i += 200
+
         self.actions ={
            
             "START":     self._go_to_options,
@@ -61,12 +71,16 @@ class MenuObj:
             "Trees": self.go_to_trees, 
             "  Binary Search Tree" : self.go_to_BST,
             "AVL Tree": self.go_to_AVL_Tree,
-            "Red Black Tree": self.go_to_RBTree
-
-
+            "Red Black Tree": self.go_to_RBTree, 
+            "Sorting Algorithms":self.go_to_Sorting_Algo_interface,
+            "Bubble Sort" : self.go_to_Bubble_sort
 
         }
-    
+
+    def go_to_Bubble_sort(self):
+        self.state= "Bubble Sort"
+    def go_to_Sorting_Algo_interface(self):
+        self.state="Sorting Algo interface"
     def go_to_RBT_Interface(self):
         self.state="RBT_Interface"
 
@@ -194,8 +208,8 @@ class MenuObj:
                     screen.fill(BLACK_1)
 
     def HandleEvents(self, event):
-        print("RBTREE")
-        print(self.Red_Black_Tree.values.inorder_traversal())
+        
+
         """ Handle all events in the menu"""
         if event.type not in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION, pygame.KEYDOWN, pygame.QUIT):
             return
@@ -232,7 +246,6 @@ class MenuObj:
         elif self.state=="  Linked List Based Stack":
             button_list=self.LL_Based_Stack.dataType_Btns
         elif self.state=="LinkedListBasedStack_Interface":
-            
             self.LL_Based_Stack.HandleInput(event)
             button_list= self.LL_Based_Stack.interface_Btns
         elif self.state=="Trees_Opt_Choose":
@@ -252,7 +265,8 @@ class MenuObj:
         elif self.state=="RBT_Interface":
             self.Red_Black_Tree.HandleInput(event)
             button_list= self.Red_Black_Tree.interface_Btns
-            
+        elif self.state=="Sorting Algo interface":
+            button_list=self.Sorting_Algos.algo_btns
 
         else:
             button_list = self.Menu_Btns  
@@ -261,7 +275,7 @@ class MenuObj:
             if btn.is_clicked(event):
                 if(self.state == "Arrays" and btn.text in ["Integer", "Float", "String", "Char"]):
                     self.array.dataType = btn.text
-                action = self.actions.get(btn.text)
+                    action = self.actions.get(btn.text)
                 if (self.state == "Array Interface") and btn.text == "Insert":
                     self.array.insert(self.array.val)
                 elif self.state == "Array Interface" and btn.text == "Delete":
@@ -344,18 +358,19 @@ class MenuObj:
                         self.Red_Black_Tree.values._search(self.Red_Black_Tree.val)
                         self.Red_Black_Tree.text=""
 
-
                 else:
                     btn.amClicked=False
 
+                action = self.actions.get(btn.text)
                 if action:
                     action()
+                    return
                 else:
                     print(f"No action defined for button: {btn.text}")
-                    
-                break
+                    break
             elif btn.is_hovered(event):
                 pass
+
 
 
     def HandleDisplay(self):
@@ -387,12 +402,9 @@ class MenuObj:
         elif self.state == "Algorithms":
             header = FONT_S1.render("Algorithms", True, WHITE, D_GREEN)
             self.screen.blit(header, header.get_rect(center=(350, 50)))
-            i=100
-            for B in self.algo_options:
-                btn = Button(170, i, r'DSA_Visualizer\B_Red.png', B, 48, 510, 255)
-                self.algo_Btns.append(btn)
+            for btn in self.algo_Btns:
                 btn.display(self.screen)
-                i += 200
+
         elif self.state == "Arrays":
             self.array.Draw(self.screen)
             for btn in self.array.dataType_Btns:
@@ -445,7 +457,11 @@ class MenuObj:
         elif self.state=="RBT_Interface":
             self.Red_Black_Tree.Draw_Inp_Box(self.screen)
             self.Red_Black_Tree.Draw_Buttons(self.screen)  
-            self.Red_Black_Tree.draw(self.screen)                
+            self.Red_Black_Tree.draw(self.screen)    
+        elif self.state=="Sorting Algo interface":
+            self.Sorting_Algos.Draw(self.screen) 
+        elif self.state=="Bubble Sort":
+            self.Bubble_Sort.Perform_Animate(self.screen)           
             
         
 
