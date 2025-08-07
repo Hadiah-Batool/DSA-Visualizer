@@ -109,9 +109,6 @@ class Array (DataStructure):
             self.highlight_index = self.current_Count 
             self.current_Count += 1
             
-            #Print the values
-            for i, val in enumerate(self.values):
-                print(f"values[{i}] = {val}")
             # start highlight animation…
             
             self.highlight_start = pygame.time.get_ticks()

@@ -6,6 +6,7 @@ from Linked_Lists import LinkedList
 from Stack import *
 from Binary_Tree import *
 from Algorithms import *
+from Queue import *
 pygame.init()
 temp= pygame.image.load(r'D:\Hadia\Python\DSA_Visualizer\HomeScreen_Bg.png')
 Bg_Start= pygame.transform.smoothscale(temp, (800, 600))
@@ -25,6 +26,8 @@ class MenuObj:
         self.linked_list = LinkedList()
         self.Stack=stack()
         self.tree = Trees()
+        self.Queue= Queue()
+        self.Array_Based_Queue= Queue_Array_Based()
         self.BST= Animated_BST()  
         self.Array_Based_Stack= Stack_Array_Based()
         self.LL_Based_Stack= Stack_LinkedList_Based()
@@ -73,10 +76,17 @@ class MenuObj:
             "AVL Tree": self.go_to_AVL_Tree,
             "Red Black Tree": self.go_to_RBTree, 
             "Sorting Algorithms":self.go_to_Sorting_Algo_interface,
-            "Bubble Sort" : self.go_to_Bubble_sort
+            "Bubble Sort" : self.go_to_Bubble_sort,
+            "Queues": self.go_to_Queue_Opt,
+            " Array Based Queue": self.go_to_arrayBasedQueue
 
         }
-
+    def go_to_arrayBasedQueue_Interface(self):
+        self.state="ArrayBasedQueue Interface"
+    def go_to_arrayBasedQueue(self):
+        self.state="ArrayBasedQueue"
+    def go_to_Queue_Opt(self):
+        self.state="Queue_Opt"
     def go_to_Bubble_sort(self):
         self.state= "Bubble Sort"
     def go_to_Sorting_Algo_interface(self):
@@ -267,7 +277,14 @@ class MenuObj:
             button_list= self.Red_Black_Tree.interface_Btns
         elif self.state=="Sorting Algo interface":
             button_list=self.Sorting_Algos.algo_btns
-
+        elif self.state=="Queue_Opt":
+            button_list= self.Queue.Buttons
+        elif self.state=="ArrayBasedQueue":
+            button_list= self.Array_Based_Queue.array.dataType_Btns
+            self.Array_Based_Queue.array.AskUser(event)
+        elif self.state=="ArrayBasedQueue Interface":
+            self.Array_Based_Queue.array.Take_input(event)
+            button_list= self.Array_Based_Queue.array.interface_Btns
         else:
             button_list = self.Menu_Btns  
 
@@ -357,7 +374,18 @@ class MenuObj:
                     elif btn.text=="Search":
                         self.Red_Black_Tree.values._search(self.Red_Black_Tree.val)
                         self.Red_Black_Tree.text=""
-
+                elif(self.state == "ArrayBasedQueue" and btn.text in ["Integer", "Float", "String", "Char"]):
+                    self.Array_Based_Queue.array.dataType = btn.text       
+                    self.go_to_arrayBasedQueue_Interface()
+                    return
+                elif (self.state=="ArrayBasedQueue Interface" and btn.text in["Enqueue", "Dequeue", "Clear"]):
+                    if (btn.text=="Enqueue" and (self.Array_Based_Queue.array.input_text !='') ):
+                        self.Array_Based_Queue.Enqueue()
+                    elif (btn.text=="Dequeue"and (len(self.Array_Based_Queue.array.values)!=0)):
+                        self.Array_Based_Queue.Dequeue()
+                    elif(btn.text=="Clear"):
+                        self.Array_Based_Queue.Clear()  
+                # "ArrayBasedQueue Interface"
                 else:
                     btn.amClicked=False
 
@@ -373,6 +401,7 @@ class MenuObj:
 
 
 
+
     def HandleDisplay(self):
         self.screen.fill(BLACK_1)
 
@@ -385,7 +414,7 @@ class MenuObj:
                 btn.display(self.screen)
 
         elif self.state == "options":
-            # draw a header, then only your selection buttons
+           
             header = FONT_S2.render("What do you want to explore?", True, WHITE, D_GREEN)
             self.screen.blit(header, header.get_rect(center=(400, 50)))
 
@@ -461,12 +490,19 @@ class MenuObj:
         elif self.state=="Sorting Algo interface":
             self.Sorting_Algos.Draw(self.screen) 
         elif self.state=="Bubble Sort":
-            self.Bubble_Sort.Perform_Animate(self.screen)           
+            self.Bubble_Sort.Perform_Animate(self.screen)   
+        elif self.state=="Queue_Opt":
+            self.Queue.display(self.screen)
+        elif self.state=="ArrayBasedQueue":
+            self.Array_Based_Queue.array.Draw(self.screen)
+            for btn in self.Array_Based_Queue.array.dataType_Btns:
+                btn.display(self.screen)
+        elif self.state=="ArrayBasedQueue Interface":
+            self.Array_Based_Queue.Display(self.screen)
             
         
 
         
-
 
 
 
