@@ -28,6 +28,7 @@ class MenuObj:
         self.tree = Trees()
         self.Queue= Queue()
         self.Array_Based_Queue= Queue_Array_Based()
+        self.LL_Based_Queue= Queue_LinkedList_Based()
         self.BST= Animated_BST()  
         self.Array_Based_Stack= Stack_Array_Based()
         self.LL_Based_Stack= Stack_LinkedList_Based()
@@ -78,9 +79,14 @@ class MenuObj:
             "Sorting Algorithms":self.go_to_Sorting_Algo_interface,
             "Bubble Sort" : self.go_to_Bubble_sort,
             "Queues": self.go_to_Queue_Opt,
-            " Array Based Queue": self.go_to_arrayBasedQueue
+            " Array Based Queue": self.go_to_arrayBasedQueue, 
+            "   Linked List Based Queue": self.go_to_LLBasedQueue
 
         }
+    def go_to_LinkedListBasedQueue_Interface(self):
+        self.state="LLBasedQueue_Interface"
+    def go_to_LLBasedQueue(self):
+        self.state= "LLBasedQueue"
     def go_to_arrayBasedQueue_Interface(self):
         self.state="ArrayBasedQueue Interface"
     def go_to_arrayBasedQueue(self):
@@ -285,9 +291,14 @@ class MenuObj:
         elif self.state=="ArrayBasedQueue Interface":
             self.Array_Based_Queue.array.Take_input(event)
             button_list= self.Array_Based_Queue.array.interface_Btns
+        elif self.state=="LLBasedQueue":
+            button_list=self.LL_Based_Queue.dataType_Btns
+        elif(self.state=="LLBasedQueue_Interface" ):
+            self.LL_Based_Queue.HandleInput(event)
+            button_list= self.LL_Based_Queue.interface_Btns
         else:
             button_list = self.Menu_Btns  
-
+#"LLBasedQueue"
         for btn in button_list:
             if btn.is_clicked(event):
                 if(self.state == "Arrays" and btn.text in ["Integer", "Float", "String", "Char"]):
@@ -385,7 +396,21 @@ class MenuObj:
                         self.Array_Based_Queue.Dequeue()
                     elif(btn.text=="Clear"):
                         self.Array_Based_Queue.Clear()  
-                # "ArrayBasedQueue Interface"
+                elif(self.state == "LLBasedQueue" and btn.text in ["Integer", "Float", "String", "Char"]):
+                    self.LL_Based_Queue.dataType = btn.text       
+                    self.go_to_LinkedListBasedQueue_Interface()
+                    return
+                elif(self.state=="LLBasedQueue_Interface" and btn.text in["Enqueue", "Dequeue", "Clear"]):
+                    if (btn.text=="Enqueue" ):
+                        self.LL_Based_Queue.insert_at_tail(self.LL_Based_Queue.val)
+                        self.LL_Based_Queue.text=''
+                    elif (btn.text=="Dequeue"and (len(self.LL_Based_Queue.values)!=0)):
+                        self.LL_Based_Queue.remove_At_Head()
+                        
+                    elif(btn.text=="Clear"):
+                        self.LL_Based_Queue.Clear() 
+
+                # , go_to_LLBasedQueue
                 else:
                     btn.amClicked=False
 
@@ -499,6 +524,13 @@ class MenuObj:
                 btn.display(self.screen)
         elif self.state=="ArrayBasedQueue Interface":
             self.Array_Based_Queue.Display(self.screen)
+        elif self.state == "LLBasedQueue":
+            self.LL_Based_Queue.AskUser(self.screen)
+        elif self.state=="LLBasedQueue_Interface":
+            self.LL_Based_Queue.Draw_Buttons(self.screen)
+            self.LL_Based_Queue.Draw_Inp_Box(self.screen)
+            self.LL_Based_Queue.Calculate_Node_Positions()
+            self.LL_Based_Queue.Draw(self.screen)
             
         
 

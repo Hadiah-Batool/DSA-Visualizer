@@ -10,8 +10,8 @@ CELL_HEIGHT = 100
 class Queue:
     def __init__(self):
 
-        self.Buttons=[Button(150, 150, r'DSA_Visualizer\B_Pink.png', " Array Based Queue", 42, 500, 250),
-                      Button(150, 350, r'DSA_Visualizer\B_Sk_Blu.png', "  Linked List Based Queue", 42, 500, 250)]
+        self.Buttons=[Button(150, 150, r'DSA_Visualizer\B_Pink.png', " Array Based Queue", 42, 550, 250),
+                      Button(150, 350, r'DSA_Visualizer\B_Sk_Blu.png', "   Linked List Based Queue", 42, 550, 250)]
     def display(self, screen):
         txt="Choose an implementation approach."
         screen.blit(FONT_S2.render(txt, True, WHITE, PURPLE),(10, 50))
@@ -23,7 +23,7 @@ class Queue_Array_Based:
         self.array= Array()
         self.Rear= 0
         self.Front=0
-        self.top_Rect = pygame.Rect(250, 150, 80, 80)
+        self.top_Rect = pygame.Rect(150, 150, 80, 80)
         self.Front_rect= pygame.Rect(50, 150, 80, 80)
         self.array.interface_Btns= [ Button(150, 50, r'DSA_Visualizer/B_Red.png', "Enqueue", 32, 200, 100),
                                 Button(350, 50, r'DSA_Visualizer/B_Red.png', "Dequeue", 32, 200, 100),
@@ -48,8 +48,8 @@ class Queue_Array_Based:
         screen.blit(txt_Surface1, (70, 170))
         screen.blit(heading_Surface1, (0, 240))
 
-        screen.blit(txt_Surface, (270, 170))
-        screen.blit(heading_Surface, ( 220, 240))
+        screen.blit(txt_Surface, (170, 170))
+        screen.blit(heading_Surface, ( 120, 240))
     def Dequeue(self):
         if self.array.current_Count == 0:
             print("Queue is empty!")
@@ -78,13 +78,14 @@ class Queue_LinkedList_Based(LinkedList):
         self.indx_Circle=None
         self.indx_Rad=50
         self.interface_Btns=[
-            Button(150, 0, r'DSA_Visualizer/B_Red.png', "Push", 32, 200, 100),
-            Button(350, 0, r'DSA_Visualizer/B_Red.png', "Pop", 32, 200, 100),
+            Button(150, 0, r'DSA_Visualizer/B_Red.png', "Enqueue", 32, 200, 100),
+            Button(350, 0, r'DSA_Visualizer/B_Red.png', "Dequeue", 32, 200, 100),
             Button(550, 0, r'DSA_Visualizer/B_Red.png', "Clear",32, 200, 100)
         ]
         #1 boxes for  value 
         self.input_box= pygame.Rect(10, 10, 140, 80)
-        self.top_Box = pygame.Rect(10, 120, 140, 80)
+        self.Head_Box = pygame.Rect(10, 120, 140, 80)
+        self.Tail_Box = pygame.Rect(600, 480, 140, 80)
 
     def HandleInput(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -136,8 +137,10 @@ class Queue_LinkedList_Based(LinkedList):
         if self.active1:
             pygame.draw.rect(screen, self.color_active, self.input_box, 3)
 
-        pygame.draw.rect(screen, D_GREEN, self.top_Box, 3)
-        Top_Surface= FONT_S2.render("Top", True, WHITE)
+        pygame.draw.rect(screen, D_GREEN, self.Head_Box, 3)
+        pygame.draw.rect(screen, D_GREEN, self.Tail_Box, 3)
+        Head_Surface= FONT_S2.render("Head", True, WHITE)
+        Tail_Surface= FONT_S2.render("Tail", True, WHITE)
         if(len(self.values)==0):
             pygame.draw.line(screen, D_GREEN, (10, 120), (150, 195), 4)
         elif(len(self.nodes)!=0):
@@ -154,7 +157,28 @@ class Queue_LinkedList_Based(LinkedList):
                  end[1] - arrow_size * math.sin(angle + math.pi/6))
             pygame.draw.polygon(screen, L_RED, [end, left, right])
 
-        screen.blit(Top_Surface, (self.top_Box.x, self.top_Box.y+75))
+
+
+        if(len(self.values)==0):
+            pygame.draw.line(screen, D_GREEN, (600, 480), (740, 555), 4)
+        elif(len(self.nodes)!=0):
+            x1, y1= 670, 515
+            x= (len(self.nodes))-1
+            x2, y2= self.nodes[x].pos
+            start = (x1, y1)
+            end = (x2, y2 + self.nodes[x].radius)
+            pygame.draw.line(screen, L_RED, start, end, 3)
+            angle = math.atan2(y2 - y1, x2 - x1)
+            arrow_size = 12
+            left = (end[0] - arrow_size * math.cos(angle - math.pi/6),
+                end[1] - arrow_size * math.sin(angle - math.pi/6))
+            right = (end[0] - arrow_size * math.cos(angle + math.pi/6),
+                 end[1] - arrow_size * math.sin(angle + math.pi/6))
+            pygame.draw.polygon(screen, L_RED, [end, left, right])
+
+        screen.blit(Head_Surface, (self.Head_Box.x, self.Head_Box.y+75))
+        screen.blit(Tail_Surface, (self.Tail_Box.x, self.Tail_Box.y+75))
+        
     def Clear(self):
         self.nodes = []
         self.values = []        
