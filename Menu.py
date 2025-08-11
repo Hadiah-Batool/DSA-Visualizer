@@ -6,6 +6,7 @@ from Linked_Lists import LinkedList
 from Stack import *
 from Binary_Tree import *
 from Algorithms import *
+from Heaps import *
 from Queue import *
 pygame.init()
 temp= pygame.image.load(r'D:\Hadia\Python\DSA_Visualizer\HomeScreen_Bg.png')
@@ -27,6 +28,8 @@ class MenuObj:
         self.Stack=stack()
         self.tree = Trees()
         self.Queue= Queue()
+        self.Heap= Heap()
+        self.Min_Heap=Visual_Min_Heap()
         self.Array_Based_Queue= Queue_Array_Based()
         self.LL_Based_Queue= Queue_LinkedList_Based()
         self.BST= Animated_BST()  
@@ -80,9 +83,16 @@ class MenuObj:
             "Bubble Sort" : self.go_to_Bubble_sort,
             "Queues": self.go_to_Queue_Opt,
             " Array Based Queue": self.go_to_arrayBasedQueue, 
-            "   Linked List Based Queue": self.go_to_LLBasedQueue
+            "   Linked List Based Queue": self.go_to_LLBasedQueue,
+            "Heaps": self.go_to_Heaps, "Min Heap": self.go_to_Min_Heap
 
         }
+    def go_to_Min_Heap_Interface(self):
+        self.state="Min Heap Interface"
+    def go_to_Min_Heap(self):
+        self.state="Min Heap"
+    def go_to_Heaps(self):
+        self.state="Heap"
     def go_to_LinkedListBasedQueue_Interface(self):
         self.state="LLBasedQueue_Interface"
     def go_to_LLBasedQueue(self):
@@ -225,7 +235,7 @@ class MenuObj:
 
     def HandleEvents(self, event):
         
-
+        print(f"State: {self.state}")
         """ Handle all events in the menu"""
         if event.type not in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION, pygame.KEYDOWN, pygame.QUIT):
             return
@@ -296,9 +306,20 @@ class MenuObj:
         elif(self.state=="LLBasedQueue_Interface" ):
             self.LL_Based_Queue.HandleInput(event)
             button_list= self.LL_Based_Queue.interface_Btns
+        elif self.state=="Heap":
+            button_list= self.Heap.Buttons
+        elif self.state=="Min Heap":
+            button_list= self.Min_Heap.dataType_Btns
+        elif self.state=="Min Heap Interface":
+            button_list=self.Min_Heap.interface_Btns
+            self.Min_Heap.HandleInput(event)
+            
         else:
             button_list = self.Menu_Btns  
-#"LLBasedQueue"
+
+
+
+#"Min Heap Interface"
         for btn in button_list:
             if btn.is_clicked(event):
                 if(self.state == "Arrays" and btn.text in ["Integer", "Float", "String", "Char"]):
@@ -409,8 +430,23 @@ class MenuObj:
                         
                     elif(btn.text=="Clear"):
                         self.LL_Based_Queue.Clear() 
+                elif self.state=="Min Heap"and btn.text in ["Integer", "Float", "String", "Char"]:
+                     self.Min_Heap.dataType = btn.text       
+                     self.go_to_Min_Heap_Interface()
+                     return
+                elif (self.state=="Min Heap Interface" and btn.text in ["  Extract Root",  "Insert", "Search"] ):
+                    if btn.text =="Insert":
+                        self.Min_Heap.insert_animated(self.screen,self.Min_Heap.val )
+                        self.Min_Heap.text=""
+                    elif btn.text=="  Extract Root":
+                        self.Min_Heap.extract_min_animated(self.screen)
+                        self.Min_Heap.text=""
+                    elif btn.text=="Search":
+                        self.Min_Heap.search_animated(self.screen, self.Min_Heap.val)
+                        self.Min_Heap.text=""
 
-                # , go_to_LLBasedQueue
+
+                # "Min Heap Interface"
                 else:
                     btn.amClicked=False
 
@@ -531,7 +567,14 @@ class MenuObj:
             self.LL_Based_Queue.Draw_Inp_Box(self.screen)
             self.LL_Based_Queue.Calculate_Node_Positions()
             self.LL_Based_Queue.Draw(self.screen)
-            
+        elif self.state=="Heap":
+            self.Heap.display(self.screen)
+        elif self.state=="Min Heap":
+            self.Min_Heap.AskUser(self.screen)
+        elif self.state=="Min Heap Interface":
+            self.Min_Heap.Draw_Inp_Box(self.screen)
+            self.Min_Heap.Draw_Buttons(self.screen)
+            self.Min_Heap.draw(self.screen)
         
 
         
