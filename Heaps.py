@@ -294,7 +294,7 @@ class Visual_Min_Heap:
                 if i == self.highlight_index:
                     vis.color = PINK       # current focus
                 elif i in self.visited_indices:
-                    vis.color = YELLOW     # already checked
+                    vis.color = GREY     # already checked
                 else:
                     vis.color = DED_GREEN  # default
                 vis.draw(screen)
@@ -326,7 +326,7 @@ class Visual_Min_Heap:
         screen.fill(BLACK_1)
         self.draw(screen)
         pygame.display.update()
-        pygame.time.wait(1000)
+        pygame.time.wait(750)
         self.highlight_index = None
 
 
@@ -335,7 +335,9 @@ class Visual_Min_Heap:
             return None
         if len(self.values.heap) == 1:
             v = self.values.heap.pop()
-            screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+            screen.fill(BLACK_1); 
+            self.draw(screen);
+            pygame.display.update()
             return v
 
         min_val = self.values.heap[0]
@@ -345,6 +347,10 @@ class Visual_Min_Heap:
         i = 0
         n = len(self.values.heap)
         while True:
+            self.highlight_index = i
+            screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+            pygame.time.wait(1000)
+
             left, right = 2*i+1, 2*i+2
             smallest = i
             if left < n and self.values.heap[left] < self.values.heap[smallest]:
@@ -356,7 +362,7 @@ class Visual_Min_Heap:
 
             self.highlight_index = i
             screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
-            pygame.time.wait(350)
+            pygame.time.wait(1000)
 
             self.values.heap[i], self.values.heap[smallest] = self.values.heap[smallest], self.values.heap[i]
             i = smallest
