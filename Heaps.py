@@ -312,19 +312,24 @@ class Visual_Min_Heap:
             screen.fill(BLACK_1)
             self.draw(screen)
             pygame.display.update()
-            pygame.time.wait(1000)
+            pygame.time.wait(500)
 
             if self.values.heap[i] < self.values.heap[parent]:  # min-heap compare
+                
                 self.values.heap[i], self.values.heap[parent] = self.values.heap[parent], self.values.heap[i]
                 i = parent
             else:
+                self.highlight_index=i
                 break
 
-        self.highlight_index = None
         # final redraw
         screen.fill(BLACK_1)
         self.draw(screen)
         pygame.display.update()
+        pygame.time.wait(1000)
+        self.highlight_index = None
+
+
     def extract_min_animated(self, screen):
         if not self.values.heap:
             return None
@@ -424,7 +429,8 @@ class Visual_Min_Heap:
         # Not found
         self.highlight_index = None
         self.visited_indices.clear()
-        screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+        screen.fill(BLACK_1); self.draw(screen);
+        pygame.display.update()
         return None
 
 
