@@ -30,6 +30,7 @@ class MenuObj:
         self.Queue= Queue()
         self.Heap= Heap()
         self.Min_Heap=Visual_Min_Heap()
+        self.Max_Heap= Visual_Max_Heap()
         self.Array_Based_Queue= Queue_Array_Based()
         self.LL_Based_Queue= Queue_LinkedList_Based()
         self.BST= Animated_BST()  
@@ -84,9 +85,14 @@ class MenuObj:
             "Queues": self.go_to_Queue_Opt,
             " Array Based Queue": self.go_to_arrayBasedQueue, 
             "   Linked List Based Queue": self.go_to_LLBasedQueue,
-            "Heaps": self.go_to_Heaps, "Min Heap": self.go_to_Min_Heap
+            "Heaps": self.go_to_Heaps, "Min Heap": self.go_to_Min_Heap, 
+            "Max Heap" : self.go_to_Max_Heap
 
         }
+    def go_to_Max_Heap_Interface(self):
+        self.state="Max Heap Interface"
+    def go_to_Max_Heap(self):
+        self.state= "Max Heap"
     def go_to_Min_Heap_Interface(self):
         self.state="Min Heap Interface"
     def go_to_Min_Heap(self):
@@ -313,7 +319,14 @@ class MenuObj:
         elif self.state=="Min Heap Interface":
             button_list=self.Min_Heap.interface_Btns
             self.Min_Heap.HandleInput(event)
-            
+        elif self.state=="Max Heap":
+            button_list= self.Max_Heap.dataType_Btns
+        elif self.state=="Max Heap Interface":
+            button_list=self.Max_Heap.interface_Btns
+            self.Max_Heap.HandleInput(event)
+
+
+        # "Max Heap", "Max Heap Interface"
         else:
             button_list = self.Menu_Btns  
 
@@ -434,6 +447,7 @@ class MenuObj:
                      self.Min_Heap.dataType = btn.text       
                      self.go_to_Min_Heap_Interface()
                      return
+
                 elif (self.state=="Min Heap Interface" and btn.text in ["  Extract Root",  "Insert", "Search"] ):
                     if btn.text =="Insert":
                         self.Min_Heap.insert_animated(self.screen,self.Min_Heap.val )
@@ -444,9 +458,23 @@ class MenuObj:
                     elif btn.text=="Search":
                         self.Min_Heap.search_animated(self.screen, self.Min_Heap.val)
                         self.Min_Heap.text=""
+                elif self.state=="Max Heap"and btn.text in ["Integer", "Float", "String", "Char"]:
+                     self.Max_Heap.dataType = btn.text       
+                     self.go_to_Max_Heap_Interface()
+                     return
 
+                elif (self.state=="Max Heap Interface" and btn.text in ["  Extract Root",  "Insert", "Search"] ):
+                    if btn.text =="Insert":
+                        self.Max_Heap.insert_animated(self.screen,self.Max_Heap.val )
+                        self.Max_Heap.text=""
+                    elif btn.text=="  Extract Root":
+                        self.Max_Heap.extract_max_animated(self.screen)
+                        self.Max_Heap.text=""
+                    elif btn.text=="Search":
+                        self.Max_Heap.search_animated(self.screen, self.Max_Heap.val)
+                        self.Max_Heap.text=""
 
-                # "Min Heap Interface"
+                # Max Heap Interface
                 else:
                     btn.amClicked=False
 
@@ -575,8 +603,13 @@ class MenuObj:
             self.Min_Heap.Draw_Inp_Box(self.screen)
             self.Min_Heap.Draw_Buttons(self.screen)
             self.Min_Heap.draw(self.screen)
-        
-
+        elif self.state=="Max Heap":
+            self.Max_Heap.AskUser(self.screen)
+        elif self.state=="Max Heap Interface":
+            self.Max_Heap.Draw_Inp_Box(self.screen)
+            self.Max_Heap.Draw_Buttons(self.screen)
+            self.Max_Heap.draw(self.screen)        
+#Max_Heap
         
 
 

@@ -399,7 +399,7 @@ class Visual_Min_Heap:
             screen.fill(BLACK_1)
             self.draw(screen)
             pygame.display.update()
-            pygame.time.wait(350)
+            pygame.time.wait(500)
 
             # Check for match
             if heap[i] == key:
@@ -438,5 +438,242 @@ class Visual_Min_Heap:
         screen.fill(BLACK_1); self.draw(screen);
         pygame.display.update()
         return None
+
+class Visual_Max_Heap:
+    def __init__(self):
+        self.values = MaxHeap()                 # <— Max heap under the hood
+        self.input_box = pygame.Rect(10, 10, 140, 70)
+
+        # input state
+        self.color_active   = L_GREEN
+        self.color_inactive = DED_GREEN
+        self.color = self.color_inactive
+        self.active1 = False
+        self.text = ''
+        self.val = None
+        self.dataType = None
+
+        # visuals for animations
+        self.highlight_index = None      # index being inspected
+        self.visited_indices = set()     # already checked
+
+        # buttons (same sizing as your min heap)
+        self.interface_Btns = [
+            Button(155, 0, r'DSA_Visualizer\B_Maroon.png', "Insert", 32, 200, 100),
+            Button(355, 0, r'DSA_Visualizer\B_Maroon.png', "  Extract Root", 32, 210, 100),
+            Button(555, 0, r'DSA_Visualizer\B_Maroon.png', "Search", 32, 200, 100),
+        ]
+
+       
+        self.data_Type_dict = {"Integer": int, "Float": float, "String": str, "Char": str}
+        self.dataType_Btns = [
+            Button(50, 100,  r'DSA_Visualizer\B_Pink.png',   "Integer", 64, 300, 150),
+            Button(400, 100, r'DSA_Visualizer\B_Purp.png',   "Float",   64, 300, 150),
+            Button(50, 250,  r'DSA_Visualizer\B_DedBlu.png', "String",  64, 300, 150),
+            Button(400, 250, r'DSA_Visualizer\B_Green.png',  "Char",    64, 300, 150),
+        ]
+
+    
+    def AskUser(self, screen) -> None:
+        txt = "Please select a data type:"
+        screen.blit(FONT_S1.render(txt, True, WHITE, DED_GREEN), (20, 20))
+        for btn in self.dataType_Btns:
+            btn.display(screen)
+
+    def HandleInput(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            self.active1 = self.input_box.collidepoint(event.pos)
+        if event.type == pygame.KEYDOWN and self.active1:
+            if event.key == pygame.K_RETURN:
+                try:
+                    self.val = self.data_Type_dict[self.dataType](self.text)
+                    print(f"Value set to: {self.val}")
+                except ValueError as e:
+                    print(f"Invalid value: {e}")
+            elif event.key == pygame.K_BACKSPACE:
+                self.text = self.text[:-1]
+            else:
+                self.text += event.unicode
+
+    def Draw_Inp_Box(self, screen):
+        # helper text
+        Ins1_surface = FONT_S3.render("Press Enter ", True, WHITE)
+        Ins2_surface = FONT_S3.render("to confirm",   True, WHITE)
+        Ins3_surface = FONT_S3.render("input",        True, WHITE)
+        screen.blit(Ins1_surface, (630, 110))
+        screen.blit(Ins2_surface, (630, 130))
+        screen.blit(Ins3_surface, (630, 150))
+        pygame.draw.rect(screen, YELLOW, pygame.Rect(620, 100, 175, 100), 3)
+
+        # input box
+        self.color = self.color_active if self.active1 else self.color_inactive
+        pygame.draw.rect(screen, self.color, self.input_box, 3)
+        txt_surface = FONT_S2.render(self.text, True, WHITE)
+        y_surface   = FONT_S3.render("Input Value", True, WHITE)
+        screen.blit(y_surface, (self.input_box.x, self.input_box.y + 80))
+        screen.blit(txt_surface, (self.input_box.x + 5, self.input_box.y + 5))
+        if self.active1:
+            pygame.draw.rect(screen, self.color_active, self.input_box, 3)
+
+    def Draw_Buttons(self, screen):
+        for btn in self.interface_Btns:
+            btn.display(screen)
+
+    # ---------- layout & drawing ----------
+    def calculate_positions(self, screen_width):
+        """
+        Build index->Visual_Heap_Val with positions using (i, 2i+1, 2i+2).
+        """
+        self.node_map = {}
+        level_gap = 70
+        y_start   = 150
+        heap = self.values.heap
+
+        def recurse(i, x_min, x_max, depth):
+            if i >= len(heap): return
+            x = (x_min + x_max) // 2
+            y = y_start + depth * level_gap
+
+            vis = Visual_Heap_Val(val=heap[i], pos=(x, y),
+                                  color=PINK if self.highlight_index == i else DED_GREEN)
+            self.node_map[i] = vis
+
+            left, right = 2*i + 1, 2*i + 2
+            recurse(left,  x_min, x,     depth + 1)
+            recurse(right, x,     x_max, depth + 1)
+
+        if heap:
+            recurse(0, 0, screen_width, 0)
+
+    def draw(self, screen):
+        self.calculate_positions(SCREEN_WIDTH)
+
+        # edges
+        for i, vis in self.node_map.items():
+            l, r = 2*i + 1, 2*i + 2
+            if l in self.node_map:
+                pygame.draw.line(screen, WHITE, vis.pos, self.node_map[l].pos, 2)
+            if r in self.node_map:
+                pygame.draw.line(screen, WHITE, vis.pos, self.node_map[r].pos, 2)
+
+        # nodes w/ color logic
+        for i, vis in self.node_map.items():
+            if i == self.highlight_index:
+                vis.color = PINK         # current focus
+            elif i in self.visited_indices:
+                vis.color = GREY         # already checked
+            else:
+                vis.color = DED_GREEN    # default
+            vis.draw(screen)
+
+    # ---------- animations ----------
+    def insert_animated(self, screen, value):
+        self.values.heap.append(value)
+        i = len(self.values.heap) - 1
+
+        # bubble-up (max-heap: child > parent)
+        while i > 0:
+            parent = (i - 1) // 2
+            self.highlight_index = i
+            screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+            pygame.time.wait(500)
+
+            if self.values.heap[i] > self.values.heap[parent]:
+                self.values.heap[i], self.values.heap[parent] = self.values.heap[parent], self.values.heap[i]
+                i = parent
+            else:
+                break
+
+        self.highlight_index = None
+        screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+        pygame.time.wait(750)
+
+    def extract_max_animated(self, screen):
+        if not self.values.heap:
+            return None
+        if len(self.values.heap) == 1:
+            v = self.values.heap.pop()
+            screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+            return v
+
+        max_val = self.values.heap[0]
+        self.values.heap[0] = self.values.heap.pop()
+
+        # bubble-down (max-heap: parent < largest child)
+        i, n = 0, len(self.values.heap)
+        while True:
+            self.highlight_index = i
+            screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+            pygame.time.wait(1000)
+
+            left, right = 2*i + 1, 2*i + 2
+            largest = i
+            if left < n and self.values.heap[left] > self.values.heap[largest]:
+                largest = left
+            if right < n and self.values.heap[right] > self.values.heap[largest]:
+                largest = right
+            if largest == i:
+                break
+
+            self.values.heap[i], self.values.heap[largest] = self.values.heap[largest], self.values.heap[i]
+            i = largest
+
+        self.highlight_index = None
+        screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+        return max_val
+
+    def search_animated(self, screen, key):
+        """
+        BFS on a max-heap with pruning:
+        If heap[i] < key, children (<= heap[i]) cannot be key -> skip subtree.
+        """
+        heap = self.values.heap
+        n = len(heap)
+        if n == 0:
+            return None
+
+        from collections import deque
+        q = deque([0])
+        self.highlight_index = None
+        self.visited_indices.clear()
+
+        while q:
+            i = q.popleft()
+            if i >= n:
+                continue
+
+            # focus
+            self.highlight_index = i
+            screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+            pygame.time.wait(750)
+
+            if heap[i] == key:
+                pygame.time.wait(500)
+                self.highlight_index = None
+                self.visited_indices.clear()
+                screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+                return i
+
+            # mark visited
+            self.visited_indices.add(i)
+
+            # prune for max-heap
+            if heap[i] < key:
+                continue
+
+            # explore children
+            left, right = 2*i + 1, 2*i + 2
+            if left  < n: q.append(left)
+            if right < n: q.append(right)
+
+            # optional redraw to show frontier growth
+            screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+
+        # not found
+        self.highlight_index = None
+        self.visited_indices.clear()
+        screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+        return None
+
 
 
