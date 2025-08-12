@@ -44,6 +44,18 @@ class Array (DataStructure):
                                 Button(550, 50, r'DSA_Visualizer/B_Red.png',"Clear", 32, 200, 100) 
 
         ]
+        # linear-search state
+        self.search_active = False
+        self.search_target = None
+        self.search_i = 0
+        self.search_step_ms = 600      # time on each cell
+        self.flash_all_until = 0       # brief "all red" flash at start
+        self.message = ''              # status text (Found / Not found)
+        self.message_until = 0         # show message for a short time
+        self.delete_pending = False
+        self.delete_target = None
+
+
         self.data_Type_dict = {"Integer": int,
                              "Float": float,
                              "String": str,
@@ -99,7 +111,71 @@ class Array (DataStructure):
                     self.input_text += event.unicode
             
             print(f"Input text: {self.input_text}")
-            
+    def step_linear_search(self):
+        """
+        Advance the animated linear search by one 'tick'.
+        Call this every frame (e.g., inside drawInterface) to animate.
+        If delete_pending is True and a match is found, the element is deleted
+        and the used prefix is compacted (shift-left).
+        """
+
+        if not getattr(self, "search_active", False):
+            return
+
+        now = pygame.time.get_ticks()
+
+        # Initial "flash all" phase
+        if now < self.flash_all_until:
+            return
+
+        # Only scan the used portion of the array; fall back to size if not present
+        limit = getattr(self, "current_Count", getattr(self, "size", len(self.values)))
+
+        # Done scanning -> not found
+        if self.search_i >= limit:
+            self.search_active = False
+            self.highlight_index = None
+            self.message = "Not found"
+            self.message_until = now + 2000
+            # clear delete mode if we were deleting
+            if getattr(self, "delete_pending", False):
+                self.delete_pending = False
+            return
+
+        # Keep current index highlighted during dwell time
+        self.highlight_index = self.search_i
+
+        # Match?
+        if self.values[self.search_i] == self.search_target:
+            hit_index = self.search_i
+            # lock highlight on the hit for the normal dwell
+            self.highlight_start = now
+
+            if (self.delete_pending==True):
+            # Delete + compact the used prefix so it stays contiguous
+                if limit > 0:
+                    for j in range(hit_index, limit - 1):
+                        self.values[j] = self.values[j + 1]
+                    self.values[limit - 1] = None
+                    if hasattr(self, "current_Count") and self.current_Count > 0:
+                        self.current_Count -= 1
+                    self.message = f"Deleted at index {hit_index}"
+                    self.message_until = now + 2000
+                # exit delete mode
+                self.delete_pending = False
+            else:
+                self.message = f"Found at index {hit_index}"
+                self.message_until = now + 2000
+
+            # end search either way
+            self.search_active = False
+            return
+
+        # No match yet → advance after dwell time
+        if now - self.highlight_start >= getattr(self, "search_step_ms", 600):
+            self.search_i += 1
+            self.highlight_start = now
+
 
     def insert(self, data: DataType) -> None:
     # only called when user clicks your “Insert” Button
@@ -122,18 +198,11 @@ class Array (DataStructure):
         print("Cleared all values")    
 
     def delete(self, data: DataType) -> None:
-        # Delete data from the values
-        print(f"Deleting {data} from the values")
-        
-        x= self.values.index(data) if data in self.values else -1
-        if x != -1:
-            self.values[x] = None
-            self.highlight_index = x
-            self.highlight_start = pygame.time.get_ticks()
-            print(f"Highlighting index: {self.highlight_index}")
-        
-        if self.current_Count > 0:
-            self.current_Count -= 1
+        # kick off animated search; actual removal happens inside step_linear_search()
+        self.delete_pending = True
+        self.delete_target = data
+        self.start_linear_search(data)
+
 
     def Draw(self, screen) -> None:
         # draw the prompt
@@ -149,6 +218,22 @@ class Array (DataStructure):
         pygame.draw.rect(screen, self.color, self.input_box, 2)
         txt2 = "Choose the data type:"
         screen.blit(FONT_S2.render(txt2, True, WHITE), (10, 150))
+
+    def start_linear_search(self, target):
+        self.search_active = True
+        self.search_target = target
+        self.delete_pending = True
+        self.search_i = 0
+
+        now = pygame.time.get_ticks()
+        self.flash_all_until = now + 300  # flash all for 300ms
+        self.highlight_index = None
+        self.highlight_start = now
+        self.message = ''
+        self.message_until = 0
+
+
+
 
     def drawInterface(self, screen) :
         if(self.text ==''):
@@ -168,11 +253,15 @@ class Array (DataStructure):
          for btn in self.interface_Btns:
              btn.display(screen)
         now = pygame.time.get_ticks()
+
+        # drive the search state machine every frame
+        self.step_linear_search()
+        flash_all = now < self.flash_all_until
         i=0
         for i, rect in enumerate(self.rects):
-            
-            if (i == self.highlight_index and
-                now - self.highlight_start < self.interval):
+            if flash_all:
+                color = D_GREEN
+            elif (i == self.highlight_index and now - self.highlight_start < self.interval):
                 color = D_RED
             else:
                 color = D_GREEN
@@ -195,7 +284,8 @@ class Array (DataStructure):
                 color = L_GREEN
 
             pygame.draw.rect(screen, color, rect, 4)
-
+            if self.message and now < self.message_until:
+                screen.blit(FONT_S2.render(self.message, True, WHITE), (25, 130))
             # draw index number centered
             txt = FONT_S4.render(str(i), True, WHITE)
             txt_rect = txt.get_rect(center=rect.center)
