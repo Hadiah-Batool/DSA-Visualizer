@@ -1,7 +1,7 @@
 import pygame, sys
 from Buttons import Button
 from Menu import *
-
+from UIProperties import *
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
 clock  = pygame.time.Clock()
@@ -33,7 +33,6 @@ while True:
             sys.exit()
         menu.HandleEvents(event)
 
-    screen.fill(BLACK_1)
     menu.HandleDisplay()
     
     # 4) flip + tick

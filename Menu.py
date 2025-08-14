@@ -8,6 +8,7 @@ from Binary_Tree import *
 from Algorithms import *
 from Heaps import *
 from Queue import *
+from Settings import Setting_Object
 pygame.init()
 temp= pygame.image.load(r'D:\Hadia\Python\DSA_Visualizer\HomeScreen_Bg.png')
 Bg_Start= pygame.transform.smoothscale(temp, (800, 600))
@@ -24,6 +25,8 @@ class MenuObj:
         self.state = "main"    # other possible value: "options"
         self.ds_options=['Arrays', 'Linked Lists', 'Stacks', 'Trees', 'Queues', 'Heaps']
         self.ds_Btns = []
+        self.settings= Setting_Object()
+        self.array = Array()
         self.linked_list = LinkedList()
         self.Stack=stack()
         self.tree = Trees()
@@ -40,6 +43,8 @@ class MenuObj:
         self.Red_Black_Tree= Animated_Red_Black_Tree()
         self.Sorting_Algos= Sorting_Algos()
         self.Bubble_Sort= Bubble_Sort()
+        self.DarkMode= False
+        self.ShowGrid=False
         i=80
         for B in self.ds_options:
             btn = Button(250, i, r'DSA_Visualizer\B_Pink.png', B, 30, 220, 110)
@@ -59,7 +64,7 @@ class MenuObj:
         self.actions ={
            
             "START":     self._go_to_options,
-            "SETTINGS":  self._open_settings,
+            "SETTINGS":  self.go_to_Settings,
             "QUIT":      self._quit_game,
             "Data Structures": self._go_to_DataStructures,
             "Algorithms": self._go_to_Algorithms,
@@ -89,6 +94,8 @@ class MenuObj:
             "Max Heap" : self.go_to_Max_Heap
 
         }
+    def go_to_Settings(self):
+        self.state = "Settings"
     def go_to_Max_Heap_Interface(self):
         self.state="Max Heap Interface"
     def go_to_Max_Heap(self):
@@ -160,7 +167,7 @@ class MenuObj:
         self.state="Data Structures"
     def _go_to_Arrays(self):
         self.state="Arrays"
-        self.array = Array()
+        
     def go_to_arrayInterface(self):
         self.state = "Array Interface"
         self.array.InitializeRects()
@@ -170,9 +177,17 @@ class MenuObj:
     def go_to_linked_list_interface(self):
         self.state = "Linked List Interface"
         
-    def _open_settings(self):
-        # whatever you want your settings button to do
-        pass
+    def _open_settings(self, event):
+        if (self.settings.Handle_Events(event)):
+            self.ShowGrid = self.settings.Grid_Box.is_Clicked
+            self.DarkMode = self.settings.Color_Mode_Box.is_Clicked
+            self.state= "main"
+            return
+        else:
+            self.ShowGrid = self.settings.Grid_Box.is_Clicked
+            self.DarkMode = self.settings.Color_Mode_Box.is_Clicked
+
+
 
     def _go_to_Algorithms(self):
         self.state="Algorithms"
@@ -324,6 +339,9 @@ class MenuObj:
         elif self.state=="Max Heap Interface":
             button_list=self.Max_Heap.interface_Btns
             self.Max_Heap.HandleInput(event)
+        elif self.state == "Settings":
+            self._open_settings(event)
+            button_list = []  # No buttons to handle in settings
 
 
         # "Max Heap", "Max Heap Interface"
@@ -332,7 +350,7 @@ class MenuObj:
 
 
 
-#"Min Heap Interface"
+
         for btn in button_list:
             if btn.is_clicked(event):
                 if(self.state == "Arrays" and btn.text in ["Integer", "Float", "String", "Char"]):
@@ -492,7 +510,15 @@ class MenuObj:
 
 
     def HandleDisplay(self):
-        self.screen.fill(BLACK_1)
+        if self.DarkMode:
+            self.screen.fill(BLACK_1)
+        else:
+            self.screen.fill(CREAM)
+
+        if self.ShowGrid and self.state in ["Array Interface", "Linked List Interface", "Stack Interface", "Queue Interface", "Tree Interface"]:
+            self.Show_Grid()
+
+
 
         if self.state == "main":
             txt= "Choose an option."
@@ -509,6 +535,8 @@ class MenuObj:
 
             for btn in self.selec_Btns:
                 btn.display(self.screen)
+        elif self.state == "Settings":
+            self.settings.Display(self.screen)
 
         elif self.state == "Data Structures":
            header = FONT_S2.render("Data Structures", True, WHITE, DED_GREEN)
@@ -608,9 +636,17 @@ class MenuObj:
         elif self.state=="Max Heap Interface":
             self.Max_Heap.Draw_Inp_Box(self.screen)
             self.Max_Heap.Draw_Buttons(self.screen)
-            self.Max_Heap.draw(self.screen)        
-#Max_Heap
-        
+            self.Max_Heap.draw(self.screen) 
+
+    def Show_Grid(self):
+        if self.DarkMode:
+            clr = BLACK_2
+        else :
+            clr = WHITE
+        for x in range(0, SCREEN_WIDTH, GRID_SIZE):
+            pygame.draw.line(self.screen, clr, (x, 0), (x, SCREEN_HEIGHT), 1)
+        for y in range(0, SCREEN_HEIGHT, GRID_SIZE):
+            pygame.draw.line(self.screen, clr, (0, y), (SCREEN_WIDTH, y), 1)
 
 
 
