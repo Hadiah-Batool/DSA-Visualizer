@@ -266,7 +266,7 @@ class Array (DataStructure):
             else:
                 color = D_GREEN
 
-            pygame.draw.rect(screen, color, rect, 4)
+            pygame.draw.rect(screen, color, rect)
 
             # draw stored value (if any) centered
             if self.values[i] is not None:
@@ -283,7 +283,7 @@ class Array (DataStructure):
             else:
                 color = L_GREEN
 
-            pygame.draw.rect(screen, color, rect, 4)
+            pygame.draw.rect(screen, color, rect)
             if self.message and now < self.message_until:
                 screen.blit(FONT_S2.render(self.message, True, WHITE), (25, 130))
             # draw index number centered

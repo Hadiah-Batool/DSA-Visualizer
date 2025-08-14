@@ -22,7 +22,7 @@ class MenuObj:
         self.HEIGHT = height
         self.Menu_Btns= btns
         self.selec_Btns= selecButtons
-        self.state = "main"    # other possible value: "options"
+        self.state = "main"    
         self.ds_options=['Arrays', 'Linked Lists', 'Stacks', 'Trees', 'Queues', 'Heaps']
         self.ds_Btns = []
         self.settings= Setting_Object()
@@ -122,7 +122,6 @@ class MenuObj:
         self.state="Sorting Algo interface"
     def go_to_RBT_Interface(self):
         self.state="RBT_Interface"
-
     def go_to_RBTree(self):
         self.state="RB Tree"
     def go_to_AVL_Tree(self):
@@ -178,10 +177,11 @@ class MenuObj:
         self.state = "Linked List Interface"
         
     def _open_settings(self, event):
+        
         if (self.settings.Handle_Events(event)):
             self.ShowGrid = self.settings.Grid_Box.is_Clicked
-            self.DarkMode = self.settings.Color_Mode_Box.is_Clicked
-            self.state= "main"
+            Dark_Mode = self.DarkMode = self.settings.Color_Mode_Box.is_Clicked
+            self.state = "main"
             return
         else:
             self.ShowGrid = self.settings.Grid_Box.is_Clicked
@@ -255,8 +255,8 @@ class MenuObj:
                     screen.fill(BLACK_1)
 
     def HandleEvents(self, event):
-        
-        print(f"State: {self.state}")
+        print(f"Dark Mode: {Dark_Mode}")
+
         """ Handle all events in the menu"""
         if event.type not in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION, pygame.KEYDOWN, pygame.QUIT):
             return
@@ -515,7 +515,10 @@ class MenuObj:
         else:
             self.screen.fill(CREAM)
 
-        if self.ShowGrid and self.state in ["Array Interface", "Linked List Interface", "Stack Interface", "Queue Interface", "Tree Interface"]:
+        if self.ShowGrid and self.state in ["Array Interface", "Linked List Interface",
+         "LLBasedQueue_Interface", "ArrayBasedQueue Interface", "AVL_Interface", 
+         "BST Interface", "LinkedListBasedStack_Interface", "Array Stack Interface", 
+         "Max Heap Interface", "Min Heap Interface", "RBT_Interface"]:
             self.Show_Grid()
 
 
@@ -642,7 +645,7 @@ class MenuObj:
         if self.DarkMode:
             clr = BLACK_2
         else :
-            clr = WHITE
+            clr = (210, 192, 169)
         for x in range(0, SCREEN_WIDTH, GRID_SIZE):
             pygame.draw.line(self.screen, clr, (x, 0), (x, SCREEN_HEIGHT), 1)
         for y in range(0, SCREEN_HEIGHT, GRID_SIZE):

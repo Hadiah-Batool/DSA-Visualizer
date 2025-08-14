@@ -19,6 +19,7 @@ CREAM = (229, 220, 198)
 GREEN = (0, 255, 0)
 BLACK_2= (60, 60, 68)
 GRID_SIZE=15
+Dark_Mode= False
 FONT_S1 = pygame.font.Font(r'DSA_Visualizer\BlockBlueprint.ttf', 64)
 FONT_S2 = pygame.font.Font(r'DSA_Visualizer\BlockBlueprint.ttf', 48)
 FONT_S3 = pygame.font.Font(r'DSA_Visualizer\BlockBlueprint.ttf', 32)

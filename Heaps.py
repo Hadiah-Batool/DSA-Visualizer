@@ -309,7 +309,10 @@ class Visual_Min_Heap:
             parent = (i - 1) // 2
             # highlight current & parent
             self.highlight_index = i
-            screen.fill(BLACK_1)
+            if Dark_Mode:
+                screen.fill(BLACK_1)
+            else:
+                screen.fill(CREAM)
             self.draw(screen)
             pygame.display.update()
             pygame.time.wait(500)
@@ -323,7 +326,10 @@ class Visual_Min_Heap:
                 break
 
         # final redraw
-        screen.fill(BLACK_1)
+        if Dark_Mode:
+            screen.fill(BLACK_1)       
+        else:
+            screen.fill(CREAM)
         self.draw(screen)
         pygame.display.update()
         pygame.time.wait(750)
@@ -335,8 +341,11 @@ class Visual_Min_Heap:
             return None
         if len(self.values.heap) == 1:
             v = self.values.heap.pop()
-            screen.fill(BLACK_1); 
-            self.draw(screen);
+            if Dark_Mode:
+                screen.fill(BLACK_1)
+            else:
+                screen.fill(CREAM)
+            self.draw(screen)
             pygame.display.update()
             return v
 
@@ -348,7 +357,12 @@ class Visual_Min_Heap:
         n = len(self.values.heap)
         while True:
             self.highlight_index = i
-            screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+            if Dark_Mode:
+                screen.fill(BLACK_1)
+            else:
+                screen.fill(CREAM)
+            self.draw(screen)
+            pygame.display.update()
             pygame.time.wait(1000)
 
             left, right = 2*i+1, 2*i+2
@@ -361,14 +375,24 @@ class Visual_Min_Heap:
                 break
 
             self.highlight_index = i
-            screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+            if Dark_Mode:
+                screen.fill(BLACK_1)
+            else:
+                screen.fill(CREAM)
+            self.draw(screen)
+            pygame.display.update()
             pygame.time.wait(1000)
 
             self.values.heap[i], self.values.heap[smallest] = self.values.heap[smallest], self.values.heap[i]
             i = smallest
 
         self.highlight_index = None
-        screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+        if Dark_Mode:
+            screen.fill(BLACK_1)
+        else:
+            screen.fill(CREAM)
+        self.draw(screen)
+        pygame.display.update()
         return min_val
     def search_animated(self, screen, key):
         """
@@ -396,7 +420,10 @@ class Visual_Min_Heap:
 
             # Focus this node
             self.highlight_index = i
-            screen.fill(BLACK_1)
+            if Dark_Mode:
+                screen.fill(BLACK_1)
+            else:
+                screen.fill(CREAM)
             self.draw(screen)
             pygame.display.update()
             pygame.time.wait(500)
@@ -428,14 +455,21 @@ class Visual_Min_Heap:
                 q.append(right)
 
             # Small redraw after enqueue to show growing frontier (optional)
-            screen.fill(BLACK_1)
+            if Dark_Mode:
+                screen.fill(BLACK_1)
+            else:
+                screen.fill(CREAM)
             self.draw(screen)
             pygame.display.update()
 
         # Not found
         self.highlight_index = None
         self.visited_indices.clear()
-        screen.fill(BLACK_1); self.draw(screen);
+        if Dark_Mode:
+            screen.fill(BLACK_1)
+        else:
+            screen.fill(CREAM)
+        self.draw(screen)
         pygame.display.update()
         return None
 
@@ -575,7 +609,11 @@ class Visual_Max_Heap:
         while i > 0:
             parent = (i - 1) // 2
             self.highlight_index = i
-            screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+            if Dark_Mode:
+                screen.fill(BLACK_1)
+            else:
+                screen.fill(CREAM)
+            self.draw(screen); pygame.display.update()
             pygame.time.wait(500)
 
             if self.values.heap[i] > self.values.heap[parent]:
@@ -585,7 +623,11 @@ class Visual_Max_Heap:
                 break
 
         self.highlight_index = None
-        screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+        if Dark_Mode:
+            screen.fill(BLACK_1)
+        else:
+            screen.fill(CREAM)
+        self.draw(screen); pygame.display.update()
         pygame.time.wait(750)
 
     def extract_max_animated(self, screen):
@@ -603,7 +645,12 @@ class Visual_Max_Heap:
         i, n = 0, len(self.values.heap)
         while True:
             self.highlight_index = i
-            screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+            if Dark_Mode:
+                screen.fill(BLACK_1)
+            else:
+                screen.fill(CREAM)
+            self.draw(screen)
+            pygame.display.update()
             pygame.time.wait(1000)
 
             left, right = 2*i + 1, 2*i + 2
@@ -619,7 +666,12 @@ class Visual_Max_Heap:
             i = largest
 
         self.highlight_index = None
-        screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+        if Dark_Mode:
+            screen.fill(BLACK_1)
+        else:
+            screen.fill(CREAM)
+        self.draw(screen)
+        pygame.display.update()
         return max_val
 
     def search_animated(self, screen, key):
@@ -644,14 +696,24 @@ class Visual_Max_Heap:
 
             # focus
             self.highlight_index = i
-            screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+            if Dark_Mode:
+                screen.fill(BLACK_1)
+            else:
+                screen.fill(CREAM)
+            self.draw(screen)
+            pygame.display.update()
             pygame.time.wait(750)
 
             if heap[i] == key:
                 pygame.time.wait(500)
                 self.highlight_index = None
                 self.visited_indices.clear()
-                screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+                if Dark_Mode:
+                    screen.fill(BLACK_1)
+                else:
+                    screen.fill(CREAM)
+                self.draw(screen)
+                pygame.display.update()
                 return i
 
             # mark visited
@@ -667,12 +729,22 @@ class Visual_Max_Heap:
             if right < n: q.append(right)
 
             # optional redraw to show frontier growth
-            screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+            if Dark_Mode:
+                screen.fill(BLACK_1)
+            else:
+                screen.fill(CREAM)
+            self.draw(screen)
+            pygame.display.update()
 
         # not found
         self.highlight_index = None
         self.visited_indices.clear()
-        screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+        if Dark_Mode:
+            screen.fill(BLACK_1)
+        else:
+            screen.fill(CREAM)
+        self.draw(screen)
+        pygame.display.update()
         return None
 
 
