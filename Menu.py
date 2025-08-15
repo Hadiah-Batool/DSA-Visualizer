@@ -255,7 +255,7 @@ class MenuObj:
                     screen.fill(BLACK_1)
 
     def HandleEvents(self, event):
-        print(f"Dark Mode: {Dark_Mode}")
+        print(f"State: {self.state}")
 
         """ Handle all events in the menu"""
         if event.type not in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION, pygame.KEYDOWN, pygame.QUIT):
@@ -280,7 +280,7 @@ class MenuObj:
         elif self.state == "Linked List Interface" and not self.linked_list.inDisplayBoxes:
             button_list = self.linked_list.interface_Btns
         elif self.state == "Linked List Interface" and self.linked_list.inDisplayBoxes:
-            self.linked_list.HandleInput(event)
+            self.linked_list.HandleInput(event, self.screen)
             button_list = self.linked_list.Where_To_Buttons
         elif self.state=="Stack_Choose_Opt":
             button_list= self.Stack.Buttons
@@ -342,14 +342,8 @@ class MenuObj:
         elif self.state == "Settings":
             self._open_settings(event)
             button_list = []  # No buttons to handle in settings
-
-
-        # "Max Heap", "Max Heap Interface"
         else:
             button_list = self.Menu_Btns  
-
-
-
 
         for btn in button_list:
             if btn.is_clicked(event):
@@ -368,6 +362,9 @@ class MenuObj:
                     return
                 elif self.state == "Linked List Interface" and btn.text in ["Insert", "Delete", "Search"]:
                     btn.amClicked=True
+                    if (btn.text == "Search"):
+                        self.linked_list.in_Search = True
+
                     self.linked_list.inDisplayBoxes = True
                 elif(self.state == "Array Stack" and btn.text in ["Integer", "Float", "String", "Char"]):
                     self.Array_Based_Stack.array.dataType = btn.text       
@@ -404,7 +401,7 @@ class MenuObj:
                         self.BST.delete(self.BST.val, self.screen)
                         self.BST.text=""
                     elif btn.text=="Search":
-                        self.BST.search_animated(self.screen, self.BST.val)
+                        # self.BST.search_animated(self.screen, self.BST.val)
                         self.BST.text=""
 
                 elif(self.state == "AVL_Tree" and btn.text in ["Integer", "Float", "String", "Char"]):
@@ -566,9 +563,15 @@ class MenuObj:
             self.linked_list.AskUser(self.screen)
         elif self.state == "Linked List Interface" :
             self.linked_list.Draw_Buttons(self.screen)
-            if self.linked_list.inDisplayBoxes:
+            if self.linked_list.inDisplayBoxes and not self.linked_list.in_Search:
                 self.linked_list.Draw_Where_To_Buttons(self.screen)
                 self.linked_list.Draw_Inp_Box(self.screen)
+            elif self.linked_list.in_Search:
+                self.linked_list.In_Indx=self.linked_list.active2=False
+                self.linked_list.Draw_Inp_Box(self.screen)
+                
+
+                
             if len(self.linked_list.values)>0 :
                 self.linked_list.Calculate_Node_Positions()
                 self.linked_list.Draw(self.screen)

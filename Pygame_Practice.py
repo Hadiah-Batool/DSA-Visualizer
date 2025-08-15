@@ -5,7 +5,8 @@ from UIProperties import *
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
 clock  = pygame.time.Clock()
-
+Icon= pygame.image.load(r"DSA_Visualizer\ICON.jpg")
+pygame.display.set_icon(Icon)
 Menu_Btns= []
 Sel_Btns=[]
 menu_b1 = Button(250, 150, r'DSA_Visualizer\B_Pink.png', "START", 48,320, 160)
