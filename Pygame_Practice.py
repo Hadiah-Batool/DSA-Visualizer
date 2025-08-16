@@ -1,6 +1,7 @@
 import pygame, sys
 from Buttons import Button
 from Menu import *
+
 from UIProperties import *
 pygame.init()
 screen = pygame.display.set_mode((800, 600))

@@ -1,6 +1,7 @@
 import pygame, math
 pygame.init()
 from UIProperties import *
+import UIProperties
 from Buttons import Button
 class Trees:
     def __init__(self):
@@ -802,6 +803,9 @@ class Animated_AVL_Tree:
 
     def delete(self, root, key, screen):
         if not root:
+            self._blit_message(screen, "Not found!", D_RED, 500)
+            pygame.display.update()
+            pygame.time.wait(800)
             return root
         
         root.highlighted = True
@@ -832,6 +836,7 @@ class Animated_AVL_Tree:
             root.right = self.delete(root.right, temp.key, screen)
         
         if not root:
+
             return root
         
         # Update height
@@ -893,7 +898,70 @@ class Animated_AVL_Tree:
     def Delete_Animation(self, screen):
         self.values.root = self.delete(self.values.root, self.val, screen)
 
+    def clear_highlights(self):
+        """Clear highlight from every node in the tree."""
+        def dfs(n):
+            if not n: return
+            n.highlighted = False
+            dfs(n.left); dfs(n.right)
+        dfs(self.values.root)
 
+    def _blit_message(self, screen, msg, color, y=520):
+        # reuse the same pattern you used in BST
+        text = FONT_S1.render(msg, True, color)
+        pad = 10
+        r = text.get_rect()
+        bg = pygame.Rect((SCREEN_WIDTH - r.width)//2 - pad, y - pad,
+                         r.width + 2*pad, r.height + 2*pad)
+        pygame.draw.rect(screen, BLACK_1, bg)
+        pygame.draw.rect(screen, color, bg, 2)
+        screen.blit(text, ((SCREEN_WIDTH - r.width)//2, y))
+
+    def search_animated(self, screen, key, keep_colored=False, step_ms=700):
+        """
+        Visual search: color every visited node.
+        If keep_colored is False, the visited path is uncolored at the end.
+        """
+        node = self.values.root
+        visited = []
+
+        # Optional: clear previous highlights so this run stands out
+        # comment out if you prefer cumulative coloring
+        # self.clear_highlights()
+
+        while node:
+            node.highlighted = True
+            visited.append(node)
+
+            # draw step
+            self.draw(screen)
+            pygame.display.update()
+            pygame.time.wait(step_ms)
+
+            if key == node.key:
+                self._blit_message(screen, "Found!", L_GREEN, 500)
+                pygame.display.update()
+                pygame.time.wait(800)
+                if not keep_colored:
+                    for n in visited:
+                        n.highlighted = False
+                    self.draw(screen)
+                    pygame.display.update()
+                return node
+
+            node = node.left if key < node.key else node.right
+
+        # not found
+        self._blit_message(screen, "Not found!", D_RED, 500)
+        pygame.display.update()
+        pygame.time.wait(800)
+
+        if not keep_colored:
+            for n in visited:
+                n.highlighted = False
+            self.draw(screen)
+            pygame.display.update()
+        return None
 
     def animate_rotation(self, old_root, new_root, screen, frames=120):
         """
@@ -923,8 +991,12 @@ class Animated_AVL_Tree:
 
         for t in range(1, frames + 1):
             alpha = t / frames
-            screen.fill(BLACK_1)  
 
+            
+            if UIProperties.Dark_Mode:
+                screen.fill(BLACK_1)
+            else:
+                screen.fill(CREAM)
             # 3a) update each node’s position
             for node in common_nodes:
                 ox, oy = old_map[node]

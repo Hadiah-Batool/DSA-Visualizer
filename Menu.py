@@ -1,6 +1,7 @@
 import pygame, sys, math
 from Buttons import Button
 from UIProperties import *
+import UIProperties
 from Arrays import Array
 from Linked_Lists import LinkedList
 from Stack import *
@@ -180,12 +181,13 @@ class MenuObj:
         
         if (self.settings.Handle_Events(event)):
             self.ShowGrid = self.settings.Grid_Box.is_Clicked
-            Dark_Mode = self.DarkMode = self.settings.Color_Mode_Box.is_Clicked
+            self.DarkMode = self.settings.Color_Mode_Box.is_Clicked
             self.state = "main"
             return
         else:
             self.ShowGrid = self.settings.Grid_Box.is_Clicked
             self.DarkMode = self.settings.Color_Mode_Box.is_Clicked
+        UIProperties.Dark_Mode = self.DarkMode
 
 
 
@@ -256,7 +258,7 @@ class MenuObj:
 
     def HandleEvents(self, event):
         print(f"State: {self.state}")
-
+        print(f"Dark Mode(self): {self.DarkMode}  Dm{UIProperties.Dark_Mode}")
         """ Handle all events in the menu"""
         if event.type not in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION, pygame.KEYDOWN, pygame.QUIT):
             return
@@ -414,11 +416,11 @@ class MenuObj:
                         self.AVL_Tree.text=""
 
                     elif btn.text=="Delete":
-                        # self.AVL_Tree.values.delete_key(self.AVL_Tree.val)
+                        
                         self.AVL_Tree.Delete_Animation(self.screen)
                         self.AVL_Tree.text=""
                     elif btn.text=="Search":
-                        self.AVL_Tree.values.search_key(self.AVL_Tree.val)
+                        self.AVL_Tree.search_animated(self.screen, self.AVL_Tree.val)
                 elif(self.state=="RB Tree" and btn.text in ["Integer", "Float", "String", "Char"]):
                     self.Red_Black_Tree.dataType= btn.text
                     self.go_to_RBT_Interface()

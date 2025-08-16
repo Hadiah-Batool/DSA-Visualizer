@@ -47,6 +47,7 @@ class Setting_Object:
           
           else:
                return False
+          
      def Display(self, screen):
           setting_txt= "Settings"
           GR_Txt= "Grid"

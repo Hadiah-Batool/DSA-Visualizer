@@ -2,6 +2,7 @@ import pygame, math
 pygame.init()
 from Data_Structures import *
 from UIProperties import *
+import UIProperties
 from Buttons import Button  
 class AnimatedNode:
     def __init__(self):
@@ -242,7 +243,7 @@ class LinkedList:
             return -1
 
         if not self.values:
-            if Dark_Mode:
+            if UIProperties.Dark_Mode:
                 screen.fill(BLACK_1)
             else:
                 screen.fill(CREAM)
