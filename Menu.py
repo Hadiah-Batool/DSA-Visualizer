@@ -401,7 +401,7 @@ class MenuObj:
                         self.BST.delete(self.BST.val, self.screen)
                         self.BST.text=""
                     elif btn.text=="Search":
-                        # self.BST.search_animated(self.screen, self.BST.val)
+                        self.BST.search_animated(self.screen, self.BST.val)
                         self.BST.text=""
 
                 elif(self.state == "AVL_Tree" and btn.text in ["Integer", "Float", "String", "Char"]):

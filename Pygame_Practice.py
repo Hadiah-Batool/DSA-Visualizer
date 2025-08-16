@@ -6,6 +6,9 @@ pygame.init()
 screen = pygame.display.set_mode((800, 600))
 clock  = pygame.time.Clock()
 Icon= pygame.image.load(r"DSA_Visualizer\ICON.jpg")
+Bg_Music = pygame.mixer.music.load(r"DSA_Visualizer\roblox-minecraft-fortnite-video-game-music-358426 (1).mp3")
+pygame.mixer.music.set_volume(0.5)
+# pygame.mixer.music.play(-1)
 pygame.display.set_icon(Icon)
 Menu_Btns= []
 Sel_Btns=[]
@@ -22,20 +25,22 @@ Sel_Btns.append(menu_b5)
 menu = MenuObj(screen, clock, 800, 600, Menu_Btns, Sel_Btns)
 pygame.display.set_caption("Algorithm Visulaizer")
 menu_Dict={'START':menu.SelectionButtons_Display }
-# First show the blocking title screen:
+
 menu.title_screen()
 
-# Now the real game loop:
+
 while True:
-    # 1) handle events
+    
     for event in pygame.event.get():
+        
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
         menu.HandleEvents(event)
-
+        
+    
     menu.HandleDisplay()
     
-    # 4) flip + tick
+    
     pygame.display.flip()
     clock.tick(60)

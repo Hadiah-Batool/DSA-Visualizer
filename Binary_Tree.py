@@ -257,6 +257,17 @@ class Animated_BST:
         # 3) draw each node on top of its edges
         for vis in self.node_map.values():
             vis.draw(screen)
+    def _blit_message(self, screen, msg, color, y=20):
+        text = FONT_S1.render(msg, True, color)
+        pad = 10
+        r = text.get_rect()
+        bg = pygame.Rect((SCREEN_WIDTH - r.width)//2 - pad, y - pad,
+                        r.width + 2*pad, r.height + 2*pad)
+        pygame.draw.rect(screen, BLACK_1, bg)
+        pygame.draw.rect(screen, color, bg, 2)
+        screen.blit(text, ((SCREEN_WIDTH - r.width)//2, y))
+        
+
 
     def search_animated(self, screen, key):
         node = self.values.root
@@ -272,22 +283,28 @@ class Animated_BST:
              if key == node.val:
                 node.highlighted = True   # final highlight
                 self.draw(screen)
+                self._blit_message(screen, "Found!", L_GREEN, 500)
                 pygame.display.update()
+                pygame.time.wait(1000)
                 node.highlighted = False
                 return node
+             
 
              elif key < node.val:
                 node = node.left
              else:
                 node = node.right
+        self._blit_message(screen, "Not found!", D_RED, 500)
+        pygame.display.update()
+        pygame.time.wait(1000)
         return None
+    
 
     def _insert_recursive(self, node, key, screen):
         node.highlighted = True
         self.draw(screen)
         pygame.display.update()
-        pygame.time.wait(750)        #second pause
-            # unmark it (or leave marked if found)
+        pygame.time.wait(750)
         node.highlighted = False
 
         if key < node.val:
@@ -295,11 +312,20 @@ class Animated_BST:
                 node.left = Node(key)
             else:
                 self._insert_recursive(node.left, key, screen)
-        else:
+        elif key > node.val:
             if node.right is None:
                 node.right = Node(key)
             else:
                 self._insert_recursive(node.right, key, screen)
+        else:
+            # duplicate → optionally flash a message
+            self._blit_message(screen, "Duplicate! Ignored.", D_RED, 500)
+            pygame.display.update()
+            pygame.time.wait(750)
+            return
+
+
+
     def Insertion_Animated(self, screen,key ):
         if not self.values.root:
             self.values.root = Node(key)
@@ -307,11 +333,23 @@ class Animated_BST:
         else:
             self._insert_recursive(self.values.root, key, screen)
 
+    def _min_value_node(self, node):
+        cur = node
+        while cur.left is not None:
+            cur = cur.left
+        return cur
 
     def delete(self, key, screen):
-        self.root = self._delete_recursive(self.values.root, key, screen)
+        self.values.root = self._delete_recursive(self.values.root, key, screen)
+
 
     def _delete_recursive(self, node, key, screen):
+    
+        if node is None:
+            self._blit_message(screen, "Not found!", D_RED, 500)
+            pygame.display.update()
+            pygame.time.wait(500)
+            return None
         node.highlighted = True
         self.draw(screen)
         pygame.display.update()
