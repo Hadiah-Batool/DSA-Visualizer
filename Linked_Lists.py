@@ -18,7 +18,6 @@ class AnimatedNode:
 
 class LinkedList:
     def __init__(self):
-        # super().__init__()
         self.head = None
         self.tail = None
         self.size = 0

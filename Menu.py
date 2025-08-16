@@ -26,6 +26,7 @@ class MenuObj:
         self.state = "main"    
         self.ds_options=['Arrays', 'Linked Lists', 'Stacks', 'Trees', 'Queues', 'Heaps']
         self.ds_Btns = []
+        self.BACK_Button= Button(620, 520, r'DSA_Visualizer\B_Sk_Blu.png', " BACK", 48, 160, 80)
         self.settings= Setting_Object()
         self.array = Array()
         self.linked_list = LinkedList()
@@ -257,7 +258,26 @@ class MenuObj:
                     screen.fill(BLACK_1)
 
     def HandleEvents(self, event):
+        self.BACK_Button.is_hovered(event)
 
+        if self.BACK_Button.is_clicked(event):
+            if self.state=="main":
+                return
+            elif self.state=="options":
+                self.state="main" 
+                return
+            elif self.state in ["Array Interface", "Linked List Interface",
+         "LLBasedQueue_Interface", "ArrayBasedQueue Interface", "AVL_Interface", 
+         "BST Interface", "LinkedListBasedStack_Interface", "Array Stack Interface", 
+         "Max Heap Interface", "Min Heap Interface", "RBT_Interface"]:
+                self.state="Data Structures"
+                return
+            else:
+                self.state = "options"
+                return
+
+            
+            
         """ Handle all events in the menu"""
         if event.type not in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION, pygame.KEYDOWN, pygame.QUIT):
             return
@@ -343,8 +363,10 @@ class MenuObj:
         elif self.state == "Settings":
             self._open_settings(event)
             button_list = []  # No buttons to handle in settings
+ 
         else:
-            button_list = self.Menu_Btns  
+            button_list = self.Menu_Btns 
+
 
         for btn in button_list:
             if btn.is_clicked(event):
@@ -512,12 +534,13 @@ class MenuObj:
             self.screen.fill(BLACK_1)
         else:
             self.screen.fill(CREAM)
-
+        
         if self.ShowGrid and self.state in ["Array Interface", "Linked List Interface",
          "LLBasedQueue_Interface", "ArrayBasedQueue Interface", "AVL_Interface", 
          "BST Interface", "LinkedListBasedStack_Interface", "Array Stack Interface", 
          "Max Heap Interface", "Min Heap Interface", "RBT_Interface"]:
             self.Show_Grid()
+        self.BACK_Button.display(self.screen)
 
 
 
