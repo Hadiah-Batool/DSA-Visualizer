@@ -1041,11 +1041,13 @@ class RB_Node:
         self.parent = None
 
 class RedBlackTree:
-    def __init__(self):
+    def __init__(self, observer=None):
         self.NIL = RB_Node(None, Color.BLACK)
         self.root = self.NIL
+        self.observer = observer  
 
     def left_rotate(self, x):
+        pre = self.observer.capture_positions() if self.observer else None  
         y = x.right
         x.right = y.left
         if y.left != self.NIL:
@@ -1059,8 +1061,11 @@ class RedBlackTree:
             x.parent.right = y
         y.left = x
         x.parent = y
+        if self.observer:  
+            self.observer.on_rotate(pre)
 
     def right_rotate(self, y):
+        pre = self.observer.capture_positions() if self.observer else None 
         x = y.left
         y.left = x.right
         if x.right != self.NIL:
@@ -1074,6 +1079,8 @@ class RedBlackTree:
             y.parent.left = x
         x.right = y
         y.parent = x
+        if self.observer:
+            self.observer.on_rotate(pre)
 
     def insert(self, key):
         node = RB_Node(key)
@@ -1083,12 +1090,14 @@ class RedBlackTree:
         y = None
         x = self.root
 
+        # DUP GUARD  — no duplicates
         while x != self.NIL:
             y = x
-            if node.key < x.key:
-                x = x.left
-            else:
-                x = x.right
+            if node.key == x.key:
+                if self.observer:
+                    self.observer.message("Duplicate! Ignored.", kind="warn")
+                return                          # <— bail out (no insertion)
+            x = x.left if node.key < x.key else x.right
 
         node.parent = y
         if y is None:
@@ -1100,6 +1109,7 @@ class RedBlackTree:
 
         self._fix_insert(node)
 
+
     def _fix_insert(self, z):
         while z.parent and z.parent.color == Color.RED:
             if z.parent == z.parent.parent.left:
@@ -1108,6 +1118,8 @@ class RedBlackTree:
                     z.parent.color = Color.BLACK
                     y.color = Color.BLACK
                     z.parent.parent.color = Color.RED
+                    if self.observer:
+                        self.observer.on_recolor([z.parent, y, z.parent.parent])  # <— NEW
                     z = z.parent.parent
                 else:
                     if z == z.parent.right:
@@ -1115,6 +1127,8 @@ class RedBlackTree:
                         self.left_rotate(z)
                     z.parent.color = Color.BLACK
                     z.parent.parent.color = Color.RED
+                    if self.observer:
+                        self.observer.on_recolor([z.parent, z.parent.parent]) 
                     self.right_rotate(z.parent.parent)
             else:
                 y = z.parent.parent.left
@@ -1122,6 +1136,8 @@ class RedBlackTree:
                     z.parent.color = Color.BLACK
                     y.color = Color.BLACK
                     z.parent.parent.color = Color.RED
+                    if self.observer:
+                        self.observer.on_recolor([z.parent, z.parent.parent])
                     z = z.parent.parent
                 else:
                     if z == z.parent.left:
@@ -1129,6 +1145,8 @@ class RedBlackTree:
                         self.right_rotate(z)
                     z.parent.color = Color.BLACK
                     z.parent.parent.color = Color.RED
+                    if self.observer:
+                        self.observer.on_recolor([z.parent, z.parent.parent])
                     self.left_rotate(z.parent.parent)
             if z == self.root:
                 break
@@ -1271,8 +1289,9 @@ class RedBlackTree:
 class Animated_Red_Black_Tree:
     def __init__(self):
          self.nodes = []
-         self.values = RedBlackTree()
-         self.input_box= pygame.Rect(10, 10, 140, 70)  
+         self._screen = None
+         self.values = RedBlackTree(observer=self)
+         self.input_box= pygame.Rect(10, 10, 140, 70)
          self.color_active = L_GREEN
          self.color_inactive = DED_GREEN
          self.color = self.color_inactive
@@ -1353,32 +1372,52 @@ class Animated_Red_Black_Tree:
             btn.display(screen)
 
     def calculate_positions(self, screen_width):
-        """
-        Builds a mapping self.node_map from each logical BST Node() to a Visual_BST_Node
-        with .pos set so that the tree fans out downward.
-        """
         self.node_map = {}
-        level_gap = 60      # vertical spacing between levels
-        y_start   = 150       # top margin
+        level_gap = 60
+        y_start = 150
 
         def recurse(logical, x_min, x_max, depth):
-            if logical is None:
+            if logical is None or logical == self.values.NIL:   # <— ignore NIL
                 return
-            # center this node in [x_min, x_max]
             x = (x_min + x_max) // 2
             y = y_start + depth * level_gap
- 
-            vis = Animated_RBTree_Node()
-            vis.val   = logical.key
-            vis.pos   = (x, y)
-            vis.color = GREY_2 if getattr(logical, 'color', 0) else D_RED
 
+            vis = Animated_RBTree_Node()
+            vis.val = logical.key
+            base = GREY_2 if logical.color == Color.BLACK else D_RED
+            vis.color = DED_GREEN if getattr(logical, 'highlighted', False) else base  # <— highlight wins
+            vis.pos = (x, y)
             self.node_map[logical] = vis
 
             recurse(logical.left,  x_min, x,     depth + 1)
             recurse(logical.right, x,     x_max, depth + 1)
 
-        recurse(self.values.root, 0, screen_width, 0)    
+        recurse(self.values.root, 0, screen_width, 0)
+    def _blit_message(self, screen, msg, color, y=520):
+        text = FONT_S1.render(msg, True, color)
+        pad = 10
+        r = text.get_rect()
+        bg = pygame.Rect((SCREEN_WIDTH - r.width)//2 - pad, y - pad, r.width + 2*pad, r.height + 2*pad)
+        pygame.draw.rect(screen, BLACK_1, bg)
+        pygame.draw.rect(screen, color, bg, 2)
+        screen.blit(text, ((SCREEN_WIDTH - r.width)//2, y))
+
+    def message(self, msg, kind="info"):
+        col = L_GREEN if kind == "ok" else (D_RED if kind == "warn" else WHITE)
+        self._blit_message(self._screen, msg, col, 500)
+        pygame.display.update()
+        pygame.time.wait(800)
+
+    def clear_highlights(self):
+        def dfs(n):
+            if not n or n == self.values.NIL: return
+            n.highlighted = False
+            dfs(n.left); dfs(n.right)
+        dfs(self.values.root)
+
+    def capture_positions(self):
+        self.calculate_positions(SCREEN_WIDTH)
+        return {node: vis.pos for node, vis in self.node_map.items()}
 
     def draw(self, screen):
         """
@@ -1390,14 +1429,115 @@ class Animated_Red_Black_Tree:
 
         # 2) draw edges (parent→child)
         for logical, vis in self.node_map.items():
-            if logical.left:
+            if logical.left  and logical.left  != self.values.NIL:
                 pygame.draw.line(screen, WHITE, vis.pos, self.node_map[logical.left].pos, 2)
-            if logical.right:
+            if logical.right and logical.right != self.values.NIL:
                 pygame.draw.line(screen, WHITE, vis.pos, self.node_map[logical.right].pos, 2)
+
 
         # 3) draw each node on top of its edges
         for vis in self.node_map.values():
             vis.draw(screen)   
+    def on_rotate(self, pre_positions, frames=60):
+        # pre_positions = positions captured *before* the rotation
+        post_positions = self.capture_positions()
+        common = [n for n in pre_positions if n in post_positions]
+
+        for t in range(1, frames + 1):
+            alpha = t / frames
+
+            # background
+            if UIProperties.Dark_Mode:
+                self._screen.fill(BLACK_1)
+            else:                     
+                self._screen.fill(CREAM)
+
+            # interpolate node positions
+            self.calculate_positions(SCREEN_WIDTH)  # refresh node_map with current nodes/colors
+            for n in common:
+                ox, oy = pre_positions[n]
+                nx, ny = post_positions[n]
+                self.node_map[n].pos = (ox + (nx - ox) * alpha, oy + (ny - oy) * alpha)
+
+            # draw edges then nodes
+            for n, vis in self.node_map.items():
+                if n.left and n.left != self.values.NIL:
+                    pygame.draw.line(self._screen, WHITE, vis.pos, self.node_map[n.left].pos, 2)
+                if n.right and n.right != self.values.NIL:
+                    pygame.draw.line(self._screen, WHITE, vis.pos, self.node_map[n.right].pos, 2)
+            for vis in self.node_map.values():
+                vis.draw(self._screen)
+
+            pygame.display.update()
+        pygame.time.wait(150)  # small settle pause
+
+    def on_recolor(self, nodes):
+        # Just redraw once with a short pause so color changes are visible
+        self.draw(self._screen)
+        pygame.display.update()
+        pygame.time.wait(350)
+    def search_animated(self, screen, key, keep_colored=False, step_ms=700):
+        self._screen = screen
+        node = self.values.root
+        visited = []
+        while node and node != self.values.NIL:
+            node.highlighted = True
+            visited.append(node)
+            self.draw(screen); pygame.display.update(); pygame.time.wait(step_ms)
+
+            if key == node.key:
+                self.message("Found!", kind="ok")
+                if not keep_colored:
+                    for n in visited: n.highlighted = False
+                    self.draw(screen); pygame.display.update()
+                return node
+            node = node.left if key < node.key else node.right
+
+        self.message("Not found!", kind="warn")
+        if not keep_colored:
+            for n in visited: n.highlighted = False
+            self.draw(screen);
+            pygame.display.update()
+        return None
+    def insert_animated(self, screen, key):
+        self._screen = screen
+        # Visual descent (and duplicate check before calling logical insert)
+        x = self.values.root
+        while x and x != self.values.NIL:
+            x.highlighted = True
+            self.draw(screen); pygame.display.update(); pygame.time.wait(500)
+            if key == x.key:
+                self.message("Duplicate! Ignored.", kind="warn")
+                x.highlighted = False
+                self.draw(screen); pygame.display.update()
+                return
+            x.highlighted = False
+            x = x.left if key < x.key else x.right
+
+        # Logical insert triggers fixups; rotations/recolors animate via observer
+        self.values.insert(key)
+        self.draw(screen); 
+        pygame.display.update()
+    def delete_animated(self, screen, key):
+        self._screen = screen
+        z = self.values._search(key)
+        if z == self.values.NIL:
+            self.message("Not found!", kind="warn")
+            return
+
+        # Visual descent to the node
+        x = self.values.root
+        while x and x != self.values.NIL:
+            x.highlighted = True
+            self.draw(screen); pygame.display.update(); pygame.time.wait(400)
+            if x == z: break
+            x.highlighted = False
+            x = x.left if key < x.key else x.right
+
+        self.values.delete(key)   # rotations/recolors animate via observer
+        self.message("Deleted", kind="ok")
+        self.clear_highlights()
+        self.draw(screen); pygame.display.update()
 
 
 

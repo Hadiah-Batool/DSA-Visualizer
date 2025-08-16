@@ -257,8 +257,7 @@ class MenuObj:
                     screen.fill(BLACK_1)
 
     def HandleEvents(self, event):
-        print(f"State: {self.state}")
-        print(f"Dark Mode(self): {self.DarkMode}  Dm{UIProperties.Dark_Mode}")
+
         """ Handle all events in the menu"""
         if event.type not in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION, pygame.KEYDOWN, pygame.QUIT):
             return
@@ -427,14 +426,14 @@ class MenuObj:
                     return
                 elif self.state=="RBT_Interface"  and btn.text in ["Insert", "Delete", "Search"]:
                     if btn.text =="Insert":
-                        self.Red_Black_Tree.values.insert(self.Red_Black_Tree.val)
+                        self.Red_Black_Tree.insert_animated(self.screen, self.Red_Black_Tree.val)
                         self.Red_Black_Tree.text=""
 
                     elif btn.text=="Delete":
-                        self.Red_Black_Tree.values.delete(self.Red_Black_Tree.val)
+                        self.Red_Black_Tree.delete_animated(self.screen, self.Red_Black_Tree.val)
                         self.Red_Black_Tree.text=""
                     elif btn.text=="Search":
-                        self.Red_Black_Tree.values._search(self.Red_Black_Tree.val)
+                        self.Red_Black_Tree.search_animated(self.screen,self.Red_Black_Tree.val)
                         self.Red_Black_Tree.text=""
                 elif(self.state == "ArrayBasedQueue" and btn.text in ["Integer", "Float", "String", "Char"]):
                     self.Array_Based_Queue.array.dataType = btn.text       
