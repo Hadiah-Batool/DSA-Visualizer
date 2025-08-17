@@ -43,8 +43,14 @@ class MenuObj:
         self.LL_Based_Stack= Stack_LinkedList_Based()
         self.AVL_Tree= Animated_AVL_Tree()
         self.Red_Black_Tree= Animated_Red_Black_Tree()
+
+
+
         self.Sorting_Algos= Sorting_Algos()
         self.Bubble_Sort= Bubble_Sort()
+        self.Selection_Sort = Selection_Sort()
+        self.Insertion_Sort = Insertion_Sort()
+
         self.DarkMode= False
         self.ShowGrid=False
         self.Bg_Music = pygame.mixer.music.load(r"DSA_Visualizer\roblox-minecraft-fortnite-video-game-music-358426 (1).mp3")
@@ -92,6 +98,8 @@ class MenuObj:
             "Red Black Tree": self.go_to_RBTree, 
             "Sorting Algorithms":self.go_to_Sorting_Algo_interface,
             "Bubble Sort" : self.go_to_Bubble_sort,
+            "Selection Sort": self.go_to_Selection_sort,
+            "Insertion Sort": self.go_to_Insertion_sort,
             "Queues": self.go_to_Queue_Opt,
             " Array Based Queue": self.go_to_arrayBasedQueue, 
             "   Linked List Based Queue": self.go_to_LLBasedQueue,
@@ -121,8 +129,19 @@ class MenuObj:
         self.state="ArrayBasedQueue"
     def go_to_Queue_Opt(self):
         self.state="Queue_Opt"
+
     def go_to_Bubble_sort(self):
-        self.state= "Bubble Sort"
+        self.state = "Bubble Sort"
+        self.Bubble_Sort.start()   
+    def go_to_Selection_sort(self):
+        self.state = "Selection Sort"
+        self.Selection_Sort.start()
+
+    def go_to_Insertion_sort(self):
+        self.state = "Insertion Sort"
+        self.Insertion_Sort.start()
+
+
     def go_to_Sorting_Algo_interface(self):
         self.state="Sorting Algo interface"
     def go_to_RBT_Interface(self):
@@ -370,6 +389,19 @@ class MenuObj:
         elif self.state == "Settings":
             self._open_settings(event)
             button_list = []  # No buttons to handle in settings
+        
+        elif self.state == "Bubble Sort":
+            self.Bubble_Sort.handle_event(event)
+            button_list = self.Bubble_Sort.control_btns
+        elif self.state == "Selection Sort":
+            self.Selection_Sort.handle_event(event)
+            button_list = self.Selection_Sort.control_btns
+
+        elif self.state == "Insertion Sort":
+            self.Insertion_Sort.handle_event(event)
+            button_list = self.Insertion_Sort.control_btns
+
+
  
         else:
             button_list = self.Menu_Btns 
@@ -545,11 +577,10 @@ class MenuObj:
         if self.ShowGrid and self.state in ["Array Interface", "Linked List Interface",
          "LLBasedQueue_Interface", "ArrayBasedQueue Interface", "AVL_Interface", 
          "BST Interface", "LinkedListBasedStack_Interface", "Array Stack Interface", 
-         "Max Heap Interface", "Min Heap Interface", "RBT_Interface"]:
+         "Max Heap Interface", "Min Heap Interface", "RBT_Interface", "Bubble Sort", "Selection Sort", "Insertion Sort"]:
             self.Show_Grid()
+
         self.BACK_Button.display(self.screen)
-
-
 
         if self.state == "main":
             txt= "Choose an option."
@@ -643,8 +674,15 @@ class MenuObj:
             self.Red_Black_Tree.draw(self.screen)    
         elif self.state=="Sorting Algo interface":
             self.Sorting_Algos.Draw(self.screen) 
-        elif self.state=="Bubble Sort":
-            self.Bubble_Sort.Perform_Animate(self.screen)   
+
+        elif self.state == "Bubble Sort":
+            self.Bubble_Sort.update_and_draw(self.screen)
+        elif self.state == "Selection Sort":
+            self.Selection_Sort.update_and_draw(self.screen)
+
+        elif self.state == "Insertion Sort":
+            self.Insertion_Sort.update_and_draw(self.screen)
+
         elif self.state=="Queue_Opt":
             self.Queue.display(self.screen)
         elif self.state=="ArrayBasedQueue":

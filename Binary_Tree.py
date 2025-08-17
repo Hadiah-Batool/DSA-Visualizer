@@ -3,6 +3,11 @@ pygame.init()
 from UIProperties import *
 import UIProperties
 from Buttons import Button
+def subtree_size(node):
+    if node is None:
+        return 0
+    return 1 + subtree_size(node.left) + subtree_size(node.right)
+
 class Trees:
     def __init__(self):
 
@@ -1370,6 +1375,7 @@ class Animated_Red_Black_Tree:
     def Draw_Buttons(self, screen):
         for btn in self.interface_Btns:
             btn.display(screen)
+
 
     def calculate_positions(self, screen_width):
         self.node_map = {}

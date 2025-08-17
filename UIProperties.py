@@ -1,4 +1,5 @@
 import pygame
+import math
 pygame.init()
 #LOAD FONT SIZES, COLOR PALLETE COZ I HAVE OCD FOR COLORS
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
