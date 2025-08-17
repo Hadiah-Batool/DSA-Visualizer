@@ -67,6 +67,12 @@ Perfect for **students, educators, and enthusiasts** who want to better understa
 
 ## 📷 Screenshots
 <img width="1248" height="938" alt="Screenshot 2025-08-17 204421" src="https://github.com/user-attachments/assets/8e913752-8c3e-491b-adfa-ded5517b5eb0" />
+<img width="1274" height="1011" alt="Screenshot 2025-08-17 204522" src="https://github.com/user-attachments/assets/8f1d5ba7-e07b-4122-b3c0-7923da6857ac" />
+<img width="1196" height="923" alt="Screenshot 2025-08-17 204250" src="https://github.com/user-attachments/assets/88ccc67a-ecf6-42eb-a9c8-a694b78b0046" />
+<img width="1186" height="932" alt="image" src="https://github.com/user-attachments/assets/445e9f4c-226a-48f4-b29e-1209c83dd8eb" />
+
+
+
 
 
 ## 🔮 Future Improvements
