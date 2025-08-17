@@ -66,10 +66,15 @@ Perfect for **students, educators, and enthusiasts** who want to better understa
 ---
 
 ## 📷 Screenshots
-<img width="1248" height="938" alt="Screenshot 2025-08-17 204421" src="https://github.com/user-attachments/assets/8e913752-8c3e-491b-adfa-ded5517b5eb0" />
-<img width="1274" height="1011" alt="Screenshot 2025-08-17 204522" src="https://github.com/user-attachments/assets/8f1d5ba7-e07b-4122-b3c0-7923da6857ac" />
-<img width="1196" height="923" alt="Screenshot 2025-08-17 204250" src="https://github.com/user-attachments/assets/88ccc67a-ecf6-42eb-a9c8-a694b78b0046" />
-<img width="1186" height="932" alt="image" src="https://github.com/user-attachments/assets/445e9f4c-226a-48f4-b29e-1209c83dd8eb" />
+<br>
+
+<img width="1274" height="1011" alt="Screenshot 2025-08-17 204522" src="https://github.com/user-attachments/assets/8f1d5ba7-e07b-4122-b3c0-7923da6857ac" /><br>
+<img width="1189" height="935" alt="Screenshot 2025-08-17 204156" src="https://github.com/user-attachments/assets/5f204a78-7624-41c5-ac2e-85a805d52670" /><br>
+<img width="1195" height="937" alt="Screenshot 2025-08-17 204738" src="https://github.com/user-attachments/assets/9fcba372-fa01-4c8d-b6e8-7cb9dfd9b095" /><br>
+
+<img width="1196" height="923" alt="Screenshot 2025-08-17 204250" src="https://github.com/user-attachments/assets/88ccc67a-ecf6-42eb-a9c8-a694b78b0046" /><br>
+<img width="1186" height="932" alt="image" src="https://github.com/user-attachments/assets/445e9f4c-226a-48f4-b29e-1209c83dd8eb" /><br>
+<img width="1248" height="938" alt="Screenshot 2025-08-17 204421" src="https://github.com/user-attachments/assets/8e913752-8c3e-491b-adfa-ded5517b5eb0" /><br>
 
 
 
