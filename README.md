@@ -82,6 +82,7 @@ Perfect for **students, educators, and enthusiasts** who want to better understa
 
 <img width="1196" height="923" alt="Screenshot 2025-08-17 204250" src="https://github.com/user-attachments/assets/88ccc67a-ecf6-42eb-a9c8-a694b78b0046" /><br>
 
+<img width="1166" height="896" alt="Screenshot 2025-08-17 210735" src="https://github.com/user-attachments/assets/83879a4f-e1cc-4ebe-9c21-b109d992f973" /><br>
 
 
 
