@@ -3,8 +3,17 @@ pygame.init()
 from UIProperties import *
 from Buttons import Button 
 from collections import deque
+import UIProperties
 
-
+def Show_Grid(screen):
+    if UIProperties.Dark_Mode:
+         clr = BLACK_2
+    else :
+            clr = (210, 192, 169)
+    for x in range(0, SCREEN_WIDTH, GRID_SIZE):
+            pygame.draw.line(screen, clr, (x, 0), (x, SCREEN_HEIGHT), 1)
+    for y in range(0, SCREEN_HEIGHT, GRID_SIZE):
+            pygame.draw.line(screen, clr, (0, y), (SCREEN_WIDTH, y), 1)
 class Heap:
     def __init__(self):
 
@@ -299,7 +308,7 @@ class Visual_Min_Heap:
                     vis.color = DED_GREEN  # default
                 vis.draw(screen)
 
-    def insert_animated(self, screen, value):
+    def insert_animated(self, screen, value, show_Grid):
     # normal push
         self.values.heap.append(value)
         i = len(self.values.heap) - 1
@@ -309,10 +318,12 @@ class Visual_Min_Heap:
             parent = (i - 1) // 2
             # highlight current & parent
             self.highlight_index = i
-            if Dark_Mode:
+            if UIProperties.Dark_Mode:
                 screen.fill(BLACK_1)
             else:
                 screen.fill(CREAM)
+            if show_Grid:
+                Show_Grid(screen)
             self.draw(screen)
             pygame.display.update()
             pygame.time.wait(500)
@@ -326,25 +337,29 @@ class Visual_Min_Heap:
                 break
 
         # final redraw
-        if Dark_Mode:
+        if UIProperties.Dark_Mode:
             screen.fill(BLACK_1)       
         else:
             screen.fill(CREAM)
+        if show_Grid:
+            Show_Grid(screen)
         self.draw(screen)
         pygame.display.update()
         pygame.time.wait(750)
         self.highlight_index = None
 
 
-    def extract_min_animated(self, screen):
+    def extract_min_animated(self, screen, show_Grid):
         if not self.values.heap:
             return None
         if len(self.values.heap) == 1:
             v = self.values.heap.pop()
-            if Dark_Mode:
+            if UIProperties.Dark_Mode:
                 screen.fill(BLACK_1)
             else:
                 screen.fill(CREAM)
+            if show_Grid:
+                Show_Grid(screen)
             self.draw(screen)
             pygame.display.update()
             return v
@@ -357,10 +372,13 @@ class Visual_Min_Heap:
         n = len(self.values.heap)
         while True:
             self.highlight_index = i
-            if Dark_Mode:
+            if UIProperties.Dark_Mode:
                 screen.fill(BLACK_1)
             else:
                 screen.fill(CREAM)
+            if show_Grid:
+                Show_Grid(screen)
+
             self.draw(screen)
             pygame.display.update()
             pygame.time.wait(1000)
@@ -375,10 +393,12 @@ class Visual_Min_Heap:
                 break
 
             self.highlight_index = i
-            if Dark_Mode:
+            if UIProperties.Dark_Mode:
                 screen.fill(BLACK_1)
             else:
                 screen.fill(CREAM)
+            if show_Grid:
+                Show_Grid(screen)
             self.draw(screen)
             pygame.display.update()
             pygame.time.wait(1000)
@@ -387,14 +407,16 @@ class Visual_Min_Heap:
             i = smallest
 
         self.highlight_index = None
-        if Dark_Mode:
+        if UIProperties.Dark_Mode:
             screen.fill(BLACK_1)
         else:
             screen.fill(CREAM)
+        if show_Grid:
+            Show_Grid(screen)
         self.draw(screen)
         pygame.display.update()
         return min_val
-    def search_animated(self, screen, key):
+    def search_animated(self, screen, key, show_Grid):
         """
         Breadth-first search on a min-heap with pruning:
         If heap[i] > key, children (>= heap[i]) cannot contain key, so skip that subtree.
@@ -420,10 +442,12 @@ class Visual_Min_Heap:
 
             # Focus this node
             self.highlight_index = i
-            if Dark_Mode:
+            if UIProperties.Dark_Mode:
                 screen.fill(BLACK_1)
             else:
                 screen.fill(CREAM)
+            if show_Grid:
+                Show_Grid(screen)
             self.draw(screen)
             pygame.display.update()
             pygame.time.wait(500)
@@ -437,7 +461,14 @@ class Visual_Min_Heap:
                 # clean up visuals
                 self.highlight_index = None
                 self.visited_indices.clear()
-                screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+                if UIProperties.Dark_Mode:
+                    screen.fill(BLACK_1)
+                else:
+                    screen.fill(CREAM)
+                if show_Grid:
+                    Show_Grid(screen)
+
+                self.draw(screen); pygame.display.update()
                 return found_index
 
             # Mark as visited (yellow thereafter)
@@ -455,20 +486,24 @@ class Visual_Min_Heap:
                 q.append(right)
 
             # Small redraw after enqueue to show growing frontier (optional)
-            if Dark_Mode:
+            if UIProperties.Dark_Mode:
                 screen.fill(BLACK_1)
             else:
                 screen.fill(CREAM)
+            if show_Grid:
+                Show_Grid(screen)
             self.draw(screen)
             pygame.display.update()
 
         # Not found
         self.highlight_index = None
         self.visited_indices.clear()
-        if Dark_Mode:
+        if UIProperties.Dark_Mode:
             screen.fill(BLACK_1)
         else:
             screen.fill(CREAM)
+        if show_Grid:
+            Show_Grid(screen)
         self.draw(screen)
         pygame.display.update()
         return None
@@ -600,8 +635,7 @@ class Visual_Max_Heap:
                 vis.color = DED_GREEN    # default
             vis.draw(screen)
 
-    # ---------- animations ----------
-    def insert_animated(self, screen, value):
+    def insert_animated(self, screen, value, show_Grid):
         self.values.heap.append(value)
         i = len(self.values.heap) - 1
 
@@ -609,10 +643,12 @@ class Visual_Max_Heap:
         while i > 0:
             parent = (i - 1) // 2
             self.highlight_index = i
-            if Dark_Mode:
+            if UIProperties.Dark_Mode:
                 screen.fill(BLACK_1)
             else:
                 screen.fill(CREAM)
+            if show_Grid:
+                Show_Grid(screen)
             self.draw(screen); pygame.display.update()
             pygame.time.wait(500)
 
@@ -623,19 +659,28 @@ class Visual_Max_Heap:
                 break
 
         self.highlight_index = None
-        if Dark_Mode:
+        if UIProperties.Dark_Mode:
             screen.fill(BLACK_1)
         else:
             screen.fill(CREAM)
+        if show_Grid:
+            Show_Grid(screen)
+
         self.draw(screen); pygame.display.update()
         pygame.time.wait(750)
 
-    def extract_max_animated(self, screen):
+    def extract_max_animated(self, screen, show_Grid):
         if not self.values.heap:
             return None
         if len(self.values.heap) == 1:
             v = self.values.heap.pop()
-            screen.fill(BLACK_1); self.draw(screen); pygame.display.update()
+            if UIProperties.Dark_Mode:
+                screen.fill(BLACK_1)
+            else:
+                screen.fill(CREAM)
+            if show_Grid:
+                Show_Grid(screen)
+            self.draw(screen); pygame.display.update()
             return v
 
         max_val = self.values.heap[0]
@@ -645,10 +690,12 @@ class Visual_Max_Heap:
         i, n = 0, len(self.values.heap)
         while True:
             self.highlight_index = i
-            if Dark_Mode:
+            if UIProperties.Dark_Mode:
                 screen.fill(BLACK_1)
             else:
                 screen.fill(CREAM)
+            if show_Grid:
+                Show_Grid(screen)
             self.draw(screen)
             pygame.display.update()
             pygame.time.wait(1000)
@@ -666,15 +713,17 @@ class Visual_Max_Heap:
             i = largest
 
         self.highlight_index = None
-        if Dark_Mode:
+        if UIProperties.Dark_Mode:
             screen.fill(BLACK_1)
         else:
             screen.fill(CREAM)
+        if show_Grid:
+            Show_Grid(screen)
         self.draw(screen)
         pygame.display.update()
         return max_val
 
-    def search_animated(self, screen, key):
+    def search_animated(self, screen, key, show_Grid):
         """
         BFS on a max-heap with pruning:
         If heap[i] < key, children (<= heap[i]) cannot be key -> skip subtree.
@@ -696,10 +745,12 @@ class Visual_Max_Heap:
 
             # focus
             self.highlight_index = i
-            if Dark_Mode:
+            if UIProperties.Dark_Mode:
                 screen.fill(BLACK_1)
             else:
                 screen.fill(CREAM)
+            if show_Grid:
+                Show_Grid(screen)
             self.draw(screen)
             pygame.display.update()
             pygame.time.wait(750)
@@ -708,10 +759,12 @@ class Visual_Max_Heap:
                 pygame.time.wait(500)
                 self.highlight_index = None
                 self.visited_indices.clear()
-                if Dark_Mode:
+                if UIProperties.Dark_Mode:
                     screen.fill(BLACK_1)
                 else:
                     screen.fill(CREAM)
+                if show_Grid:
+                    Show_Grid(screen)
                 self.draw(screen)
                 pygame.display.update()
                 return i
@@ -728,21 +781,26 @@ class Visual_Max_Heap:
             if left  < n: q.append(left)
             if right < n: q.append(right)
 
-            # optional redraw to show frontier growth
-            if Dark_Mode:
+        
+            if UIProperties.Dark_Mode:
                 screen.fill(BLACK_1)
             else:
                 screen.fill(CREAM)
+            if show_Grid:
+                Show_Grid(screen)
             self.draw(screen)
             pygame.display.update()
 
         # not found
         self.highlight_index = None
         self.visited_indices.clear()
-        if Dark_Mode:
+
+        if UIProperties.Dark_Mode:
             screen.fill(BLACK_1)
         else:
             screen.fill(CREAM)
+        if show_Grid:
+            Show_Grid(screen)   
         self.draw(screen)
         pygame.display.update()
         return None

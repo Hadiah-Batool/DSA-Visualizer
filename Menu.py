@@ -552,13 +552,13 @@ class MenuObj:
 
                 elif (self.state=="Min Heap Interface" and btn.text in ["  Extract Root",  "Insert", "Search"] ):
                     if btn.text =="Insert":
-                        self.Min_Heap.insert_animated(self.screen,self.Min_Heap.val )
+                        self.Min_Heap.insert_animated(self.screen,self.Min_Heap.val, self.ShowGrid )
                         self.Min_Heap.text=""
                     elif btn.text=="  Extract Root":
-                        self.Min_Heap.extract_min_animated(self.screen)
+                        self.Min_Heap.extract_min_animated(self.screen, self.ShowGrid)
                         self.Min_Heap.text=""
                     elif btn.text=="Search":
-                        self.Min_Heap.search_animated(self.screen, self.Min_Heap.val)
+                        self.Min_Heap.search_animated(self.screen, self.Min_Heap.val, self.ShowGrid)
                         self.Min_Heap.text=""
                 elif self.state=="Max Heap"and btn.text in ["Integer", "Float", "String", "Char"]:
                      self.Max_Heap.dataType = btn.text       
@@ -567,13 +567,13 @@ class MenuObj:
 
                 elif (self.state=="Max Heap Interface" and btn.text in ["  Extract Root",  "Insert", "Search"] ):
                     if btn.text =="Insert":
-                        self.Max_Heap.insert_animated(self.screen,self.Max_Heap.val )
+                        self.Max_Heap.insert_animated(self.screen,self.Max_Heap.val, self.ShowGrid )
                         self.Max_Heap.text=""
                     elif btn.text=="  Extract Root":
-                        self.Max_Heap.extract_max_animated(self.screen)
+                        self.Max_Heap.extract_max_animated(self.screen, self.ShowGrid)
                         self.Max_Heap.text=""
                     elif btn.text=="Search":
-                        self.Max_Heap.search_animated(self.screen, self.Max_Heap.val)
+                        self.Max_Heap.search_animated(self.screen, self.Max_Heap.val, self.ShowGrid )
                         self.Max_Heap.text=""
 
                 # Max Heap Interface
