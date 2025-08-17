@@ -668,7 +668,7 @@ class Binary_Search:
         self._set_banner("Restarted on same array", 1600)
         self.tgt_text = ""
         self.target = None
-        self.mid = self.n // 2
+        # self.mid = self.n // 2
 
 
     def toggle_pause(self):
@@ -754,39 +754,33 @@ class Binary_Search:
         screen.blit(txt, (self.tgt_box.x + 5, self.tgt_box.y + 6))
 
     def update_and_draw(self, screen):
-        # draw everything first
+
+        # 1) If target not set, just draw; no mid yet
         self._draw_array(screen)
-        for b in self.control_btns:
-            b.display(screen)
+        for b in self.control_btns: b.display(screen)
         self._draw_target_box(screen)
         self._draw_banner(screen)
-        if self.target is  None:
+        if self.target is None or not self.running or self.paused or self.done:
             return
 
-        if not self.running or self.paused or self.done:
-            return
-
-        # throttle by array.interval
+        # throttle...
         now = pygame.time.get_ticks()
         if now - self.last_step_ms < self.array.interval:
             return
         self.last_step_ms = now
 
-        # if no target yet, pick typed one (or keep the one set at start)
-        if self.target is None and self.tgt_text.strip().isdigit():
-            self.target = int(self.tgt_text.strip())
+        # 2) If we have no mid yet for this frame, compute it and STOP (so the user sees it)
+        if self.mid is None:
+            if self.low > self.high:
+                self.running = False
+                self.done = True
+                self._set_banner("Not found", 1800)
+                return
+            self.mid = (self.low + self.high) // 2
+            return  # <- show the mid for a full frame
 
-        # guard
-        if self.low > self.high:
-            self.running = False
-            self.done = True
-            self._set_banner("Not found", 1800)
-            return
-
-        # step: compute mid, compare, shrink range
-        self.mid = (self.low + self.high) // 2
+        # 3) Decide using current mid, then clear it for next frame
         mid_val = self.array.values[self.mid]
-
         if mid_val == self.target:
             self.running = False
             self.done = True
@@ -795,6 +789,8 @@ class Binary_Search:
             self.low = self.mid + 1
         else:
             self.high = self.mid - 1
+        self.mid = None  # force recompute next frame so drawing stays in sync
+
 class Linear_Search:
     def __init__(self):
         self.array = Array()
