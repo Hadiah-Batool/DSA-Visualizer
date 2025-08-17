@@ -522,9 +522,11 @@ class MenuObj:
                     return
                 elif (self.state=="ArrayBasedQueue Interface" and btn.text in["Enqueue", "Dequeue", "Clear"]):
                     if (btn.text=="Enqueue" and (self.Array_Based_Queue.array.input_text !='') ):
-                        self.Array_Based_Queue.Enqueue()
+                        self.Array_Based_Queue.Enqueue(self.screen)
+                        self.Array_Based_Queue.array.input_text=""
                     elif (btn.text=="Dequeue"and (len(self.Array_Based_Queue.array.values)!=0)):
-                        self.Array_Based_Queue.Dequeue()
+                        self.Array_Based_Queue.Dequeue(self.screen)
+                        self.Array_Based_Queue.array.input_text=""
                     elif(btn.text=="Clear"):
                         self.Array_Based_Queue.Clear()  
                 elif(self.state == "LLBasedQueue" and btn.text in ["Integer", "Float", "String", "Char"]):
@@ -534,12 +536,15 @@ class MenuObj:
                 elif(self.state=="LLBasedQueue_Interface" and btn.text in["Enqueue", "Dequeue", "Clear"]):
                     if (btn.text=="Enqueue" ):
                         self.LL_Based_Queue.insert_at_tail(self.LL_Based_Queue.val)
-                        self.LL_Based_Queue.text=''
+                        self.LL_Based_Queue.text=""
                     elif (btn.text=="Dequeue"and (len(self.LL_Based_Queue.values)!=0)):
                         self.LL_Based_Queue.remove_At_Head()
+                        self.LL_Based_Queue.text=""
                         
                     elif(btn.text=="Clear"):
                         self.LL_Based_Queue.Clear() 
+                     
+                    self.LL_Based_Queue.text=""
                 elif self.state=="Min Heap"and btn.text in ["Integer", "Float", "String", "Char"]:
                      self.Min_Heap.dataType = btn.text       
                      self.go_to_Min_Heap_Interface()

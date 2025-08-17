@@ -646,7 +646,7 @@ class Binary_Search:
         """Start with a NEW (sorted) random array unless target was typed already."""
         # create new data and remember it
         self.array.values = sorted(random.sample(range(0, 100), self.n))
-        self.base_values  = self.array.values[:]                # <— remember dataset
+        self.base_values  = self.array.values[:]                
         self.array.InitializeRects()
 
         # set target
@@ -668,7 +668,7 @@ class Binary_Search:
         self._set_banner("Restarted on same array", 1600)
         self.tgt_text = ""
         self.target = None
-        # self.mid = self.n // 2
+        
 
 
     def toggle_pause(self):

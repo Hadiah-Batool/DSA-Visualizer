@@ -20,19 +20,54 @@ class Queue:
             
 class Queue_Array_Based:
     def __init__(self):
-        self.array= Array()
-        self.Rear= 0
-        self.Front=0
-        self.top_Rect = pygame.Rect(150, 150, 80, 80)
-        self.Front_rect= pygame.Rect(50, 150, 80, 80)
-        self.array.interface_Btns= [ Button(150, 50, r'DSA_Visualizer/B_Red.png', "Enqueue", 32, 200, 100),
-                                Button(350, 50, r'DSA_Visualizer/B_Red.png', "Dequeue", 32, 200, 100),
-                                Button(550, 50, r'DSA_Visualizer/B_Red.png',"Clear", 32, 200, 100) 
+        self.array = Array()
+        # pick a capacity (e.g., 12) and initialize the visual/values
+        self.array.size = 12
+        self.array.values = [None] * self.array.size
+        self.array.current_Count = 0
+        self.array.InitializeRects()
 
+        self.Rear = 0
+        self.Front = 0
+
+        self.top_Rect   = pygame.Rect(150, 150, 80, 80)
+        self.Front_rect = pygame.Rect(50, 150, 80, 80)
+
+        # (use consistent path separators)
+        self.array.interface_Btns = [
+            Button(150, 50,  r'DSA_Visualizer\B_Red.png', "Enqueue", 32, 200, 100),
+            Button(350, 50,  r'DSA_Visualizer\B_Red.png', "Dequeue", 32, 200, 100),
+            Button(550, 50,  r'DSA_Visualizer\B_Red.png', "Clear",   32, 200, 100),
         ]
-        self.array.top_Margin=350
+        self.array.top_Margin = 350
 
+    def is_empty(self):
+        return self.array.current_Count == 0
 
+    def is_full(self):
+        return self.array.current_Count == self.array.size
+
+    def Enqueue(self, screen):
+        if self.is_full():
+            self._blit_message(screen, "Queue is full!", RED)
+            return
+        # write at Rear, highlight, advance
+        self.array.values[self.Rear] = self.array.val
+        self.array.highlight_index = self.Rear
+        self.array.highlight_start = pygame.time.get_ticks()
+
+        self.Rear = (self.Rear + 1) % self.array.size
+        self.array.current_Count += 1
+    def _blit_message(self, screen, msg, color, y=520):
+        # reuse the same pattern you used in BST
+        text = FONT_S1.render(msg, True, color)
+        pad = 10
+        r = text.get_rect()
+        bg = pygame.Rect((SCREEN_WIDTH - r.width)//2 - pad, y - pad,
+                         r.width + 2*pad, r.height + 2*pad)
+        pygame.draw.rect(screen, BLACK_1, bg)
+        pygame.draw.rect(screen, color, bg, 2)
+        screen.blit(text, ((SCREEN_WIDTH - r.width)//2, y))
     def Display(self, screen):
         txt_Surface=FONT_S1.render(str(self.Rear), True, WHITE)
         heading="Rear"
@@ -50,28 +85,23 @@ class Queue_Array_Based:
 
         screen.blit(txt_Surface, (170, 170))
         screen.blit(heading_Surface, ( 120, 240))
-    def Dequeue(self):
-        if self.array.current_Count == 0:
-            print("Queue is empty!")
+    def Dequeue(self, screen):
+        if self.is_empty():
+            self._blit_message(screen, "Queue is empty!", RED)
             return
-        else:
-            self.array.delete(self.array.values[self.Front])
-            self.Front= (self.Front+1)%self.array.size
+      
+        self.array.highlight_index = self.Front
+        self.array.highlight_start = pygame.time.get_ticks()
 
-    def Enqueue(self):
-      if self.array.current_Count == self.array.size:
-            print("Queue is full!")
-            return
-      else:
-          self.array.highlight_index= self.Rear
-          self.array.highlight_start = pygame.time.get_ticks()
-          self.array.values[self.Rear]= self.array.val
-          self.Rear = (self.Rear + 1) % self.array.size
-          self.array.current_Count += 1
+        self.array.values[self.Front] = None
+        self.Front = (self.Front + 1) % self.array.size
+        self.array.current_Count -= 1
+
     def Clear(self):
-        self.Front=0
-        self.Rear=0
-        self.array.Clear()
+        self.Front = 0
+        self.Rear = 0
+        self.array.Clear() 
+
 class Queue_LinkedList_Based(LinkedList):
     def __init__(self):
         super().__init__()
