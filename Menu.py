@@ -51,6 +51,10 @@ class MenuObj:
         self.Selection_Sort = Selection_Sort()
         self.Insertion_Sort = Insertion_Sort()
 
+        self.Searching_Algos= Searching_Algos()
+        self.Binary_Search= Binary_Search()
+        self.Linear_Search= Linear_Search()
+
         self.DarkMode= False
         self.ShowGrid=False
         self.Bg_Music = pygame.mixer.music.load(r"DSA_Visualizer\roblox-minecraft-fortnite-video-game-music-358426 (1).mp3")
@@ -104,9 +108,22 @@ class MenuObj:
             " Array Based Queue": self.go_to_arrayBasedQueue, 
             "   Linked List Based Queue": self.go_to_LLBasedQueue,
             "Heaps": self.go_to_Heaps, "Min Heap": self.go_to_Min_Heap, 
-            "Max Heap" : self.go_to_Max_Heap
+            "Max Heap" : self.go_to_Max_Heap,
+            '  Searching Algorithms': self.go_to_Searching_Algo_interface, 
+            "Binary Search": self.go_to_Binary_Search,
+            "Linear Search": self.go_to_Linear_Search
 
         }
+    def go_to_Linear_Search(self):
+        self.state = "Linear Search"
+        self.Linear_Search.start()
+
+    def go_to_Binary_Search(self):
+        self.state = "Binary Search"
+        self.Binary_Search.start()
+        
+    def go_to_Searching_Algo_interface(self):
+        self.state = "Searching Algo Interface"
     def go_to_Settings(self):
         self.state = "Settings"
     def go_to_Max_Heap_Interface(self):
@@ -389,20 +406,23 @@ class MenuObj:
         elif self.state == "Settings":
             self._open_settings(event)
             button_list = []  # No buttons to handle in settings
-        
+        elif self.state == "Searching Algo Interface":
+            button_list = self.Searching_Algos.algo_btns
         elif self.state == "Bubble Sort":
             self.Bubble_Sort.handle_event(event)
             button_list = self.Bubble_Sort.control_btns
         elif self.state == "Selection Sort":
             self.Selection_Sort.handle_event(event)
             button_list = self.Selection_Sort.control_btns
-
+        elif self.state == "Binary Search":
+            self.Binary_Search.handle_event(event)
+            button_list = self.Binary_Search.control_btns
         elif self.state == "Insertion Sort":
             self.Insertion_Sort.handle_event(event)
             button_list = self.Insertion_Sort.control_btns
-
-
- 
+        elif self.state == "Linear Search":
+            self.Linear_Search.handle_event(event)
+            button_list = self.Linear_Search.control_btns
         else:
             button_list = self.Menu_Btns 
 
@@ -577,7 +597,8 @@ class MenuObj:
         if self.ShowGrid and self.state in ["Array Interface", "Linked List Interface",
          "LLBasedQueue_Interface", "ArrayBasedQueue Interface", "AVL_Interface", 
          "BST Interface", "LinkedListBasedStack_Interface", "Array Stack Interface", 
-         "Max Heap Interface", "Min Heap Interface", "RBT_Interface", "Bubble Sort", "Selection Sort", "Insertion Sort"]:
+         "Max Heap Interface", "Min Heap Interface", "RBT_Interface", "Bubble Sort", "Selection Sort", "Insertion Sort"
+         , "Linear Search", "Binary Search"]:
             self.Show_Grid()
 
         self.BACK_Button.display(self.screen)
@@ -712,6 +733,12 @@ class MenuObj:
             self.Max_Heap.Draw_Inp_Box(self.screen)
             self.Max_Heap.Draw_Buttons(self.screen)
             self.Max_Heap.draw(self.screen) 
+        elif self.state == "Searching Algo Interface":
+            self.Searching_Algos.Draw(self.screen)
+        elif self.state == "Binary Search":
+            self.Binary_Search.update_and_draw(self.screen)
+        elif self.state == "Linear Search":
+            self.Linear_Search.update_and_draw(self.screen)
 
     def Show_Grid(self):
         if self.DarkMode:

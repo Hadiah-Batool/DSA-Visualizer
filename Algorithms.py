@@ -1,11 +1,10 @@
 import pygame
 pygame.init()
-
 from UIProperties import *
 from Buttons import Button  
 from Arrays import *
 import time, random
-random.seed(time.time())
+random.seed(time.time()) #SEEEEDDD, NVM
 
 
 class Sorting_Algos:
@@ -22,9 +21,8 @@ class Sorting_Algos:
         for btn in self.algo_btns:
             btn.display(screen)
 
-
-
 class Bubble_Sort:
+
     def __init__(self):
         self.array = Array()
         self.array.dataType = int
@@ -169,6 +167,7 @@ class Bubble_Sort:
                 self.running = False
                 self.done = True
                 self._set_banner("Done.", 1800)
+
 class Selection_Sort:
     def __init__(self):
         self.array = Array()
@@ -334,8 +333,6 @@ class Selection_Sort:
         self.j += 1
 
 
-
-# --- Insertion Sort with TEMP box, shifts & placement cues -------------------
 class Insertion_Sort:
     def __init__(self):
         self.array = Array()
@@ -573,4 +570,388 @@ class Insertion_Sort:
             self.i += 1
             self.phase = "load"
 
+class Searching_Algos:
+
+    def __init__(self):
+            self.algo_btns=[
+            Button(170, 100, r"DSA_Visualizer\B_Purp.png", "Linear Search",48, 510, 255),
+            Button(170, 300, r'DSA_Visualizer\B_Pink.png', "Binary Search", 48, 510, 255)
+        ]
+
+    def Draw(self, screen):
+        txt = "Choose type of search to visualize."
+        screen.blit(FONT_S2.render(txt, True, BLACK_1, YELLOW), (60, 70))
+        for btn in self.algo_btns:
+            btn.display(screen)
+class Binary_Search:
+    def __init__(self):
+        self.array = Array()
+        self.array.dataType = int
+        self.array.size = 12
+        # build the first dataset & remember it
+        self.array.values = sorted(random.sample(range(0, 100), self.array.size))
+        self.base_values = self.array.values[:]           # <— remember baseline data
+        self.array.InitializeRects()
+
+        # animation state
+        self.running = False
+        self.paused  = False
+        self.done    = False
+        self.last_step_ms = 0
+
+        self.low  = 0
+        self.high = self.array.size - 1
+        self.mid  = self.array.size // 2
+        self.target = None
+
+        self.control_btns = [
+            Button(20, 520,  r'DSA_Visualizer\B_Pink.png', "Start",   28, 160, 80),
+            Button(190, 520, r'DSA_Visualizer\B_Pink.png', "Restart", 28, 160, 80),
+        ]
+
+        self.banner_text  = ""
+        self.banner_until = 0
+
+        self.tgt_box     = pygame.Rect(SCREEN_WIDTH - 180, 12, 140, 40)
+        self.tgt_active  = False
+        self.tgt_text    = ""
+        self.n = self.array.size
+
+    # ---------- helpers ----------
+    def _set_banner(self, msg, ms):
+        self.banner_text  = msg
+        self.banner_until = pygame.time.get_ticks() + ms
+
+    def _draw_banner(self, screen):
+        if not self.banner_text or pygame.time.get_ticks() > self.banner_until:
+            return
+        surf = FONT_S3.render(self.banner_text, True, WHITE)
+        pad  = 8
+        rect = surf.get_rect(midtop=(SCREEN_WIDTH // 2, 8))
+        bg   = pygame.Rect(rect.x - pad, rect.y - pad, rect.w + 2*pad, rect.h + 2*pad)
+        pygame.draw.rect(screen, BLACK_1, bg)
+        pygame.draw.rect(screen, DED_GREEN, bg, 2)
+        screen.blit(surf, rect)
+
+    # ---------- lifecycle ----------
+    def _reset_state(self):
+        self.low  = 0
+        self.high = self.n - 1
+        self.mid  = None
+        self.running = True
+        self.paused  = False
+        self.done    = False
+
+    def start(self, target=None):
+        """Start with a NEW (sorted) random array unless target was typed already."""
+        # create new data and remember it
+        self.array.values = sorted(random.sample(range(0, 100), self.n))
+        self.base_values  = self.array.values[:]                # <— remember dataset
+        self.array.InitializeRects()
+
+        # set target
+        if target is None and self.tgt_text.strip().isdigit():
+            self.target = int(self.tgt_text)
+        elif target is not None:
+            self.target = target
+        elif self.target is None:
+            return
+
+        self._reset_state()
+        self._set_banner(f"Starting Binary Search for {self.target}", 2500)
+
+    def restart(self):
+        """Re-run on the SAME array; reset colors and pointers."""
+        self.array.values = self.base_values[:]                 
+        self.array.InitializeRects()                                                                # reset target text
+        self._reset_state()
+        self._set_banner("Restarted on same array", 1600)
+        self.tgt_text = ""
+        self.target = None
+        self.mid = self.n // 2
+
+
+    def toggle_pause(self):
+       
+        t = int(self.tgt_text) if self.tgt_text.strip().isdigit() else None
+        self.start(t)
+
+    # ---------- input ----------
+    def handle_event(self, event):
+        if event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONDOWN):
+            for b in self.control_btns:
+                b.is_hovered(event)
+                if b.is_clicked(event):
+                    label = b.text.strip().lower()
+                    if label == "start":
+                        self.toggle_pause()
+                    elif label == "restart":
+                        self.restart()
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            self.tgt_active = self.tgt_box.collidepoint(event.pos)
+
+        if event.type == pygame.KEYDOWN:
+            if self.tgt_active:
+                if event.key == pygame.K_RETURN:
+                    try:
+                        self.target = int(self.tgt_text.strip())
+                        self._set_banner(f"Target set to {self.target}", 1400)
+                    except:
+                        self._set_banner("Invalid target", 1200)
+                elif event.key == pygame.K_BACKSPACE:
+                    self.tgt_text = self.tgt_text[:-1]
+                else:
+                    self.tgt_text += event.unicode
+            if event.key == pygame.K_SPACE:
+                self.toggle_pause()
+            elif event.key == pygame.K_r:
+                self.restart()
+
+
+    # ---------- drawing ----------
+    def _draw_array(self, screen):
+        vals, rects, ids = self.array.values, self.array.rects, self.array.id_rects
+
+        for k, rect in enumerate(rects):
+            # color by role
+            if self.mid is not None and k == self.mid:
+                border = L_RED
+            elif self.low is not None and self.high is not None and self.low <= k <= self.high:
+                border = DED_GREEN
+            else:
+                border = GREY_2
+
+            pygame.draw.rect(screen, border, rect)
+            txt = (FONT_S2 if self.array.size < 10 else FONT_S3).render(str(vals[k]), True, WHITE)
+            screen.blit(txt, txt.get_rect(center=rect.center))
+
+            # index box
+            idr = ids[k]
+            pygame.draw.rect(screen, border, idr)
+            idx = FONT_S4.render(str(k), True, WHITE)
+            screen.blit(idx, idx.get_rect(center=idr.center))
+
+        # show low/high/mid tags (if defined)
+        def tag(k, label, col):
+            if k is None or k < 0 or k >= len(rects): return
+            r = rects[k]
+            t = FONT_S4.render(label, True, col)
+            screen.blit(t, t.get_rect(midbottom=(r.centerx, r.top - 6)))
+
+        tag(self.low,  "Low", L_GREEN)
+        tag(self.high, "High", PINK)
+        tag(self.mid,  "Mid", L_RED)
+
+    def _draw_target_box(self, screen):
+        # label
+        lab = FONT_S4.render("Target:", True, WHITE)
+        screen.blit(lab, (self.tgt_box.x - lab.get_width() - 8, self.tgt_box.y + 8))
+
+        # box
+        pygame.draw.rect(screen, self.array.color_active if self.tgt_active else self.array.color_inactive, self.tgt_box, 2)
+        txt = FONT_S3.render(self.tgt_text, True, WHITE)
+        screen.blit(txt, (self.tgt_box.x + 5, self.tgt_box.y + 6))
+
+    def update_and_draw(self, screen):
+        # draw everything first
+        self._draw_array(screen)
+        for b in self.control_btns:
+            b.display(screen)
+        self._draw_target_box(screen)
+        self._draw_banner(screen)
+        if self.target is  None:
+            return
+
+        if not self.running or self.paused or self.done:
+            return
+
+        # throttle by array.interval
+        now = pygame.time.get_ticks()
+        if now - self.last_step_ms < self.array.interval:
+            return
+        self.last_step_ms = now
+
+        # if no target yet, pick typed one (or keep the one set at start)
+        if self.target is None and self.tgt_text.strip().isdigit():
+            self.target = int(self.tgt_text.strip())
+
+        # guard
+        if self.low > self.high:
+            self.running = False
+            self.done = True
+            self._set_banner("Not found", 1800)
+            return
+
+        # step: compute mid, compare, shrink range
+        self.mid = (self.low + self.high) // 2
+        mid_val = self.array.values[self.mid]
+
+        if mid_val == self.target:
+            self.running = False
+            self.done = True
+            self._set_banner(f"Found at index {self.mid}", 2200)
+        elif mid_val < self.target:
+            self.low = self.mid + 1
+        else:
+            self.high = self.mid - 1
+class Linear_Search:
+    def __init__(self):
+        self.array = Array()
+        self.array.dataType = int
+        self.array.size = 12
+        # fill with random values; mark the used length
+        self.array.values = [random.randint(0, 99) for _ in range(self.array.size)]
+        self.array.current_Count = self.array.size
+        self.array.InitializeRects()
+
+        self.target = None
+        self.running = False
+        self.banner_text = ""
+        self.banner_until = 0
+        self.last_step_ms = 0
+
+        # controls + target box (same placement as Binary Search for consistency)
+        self.control_btns = [
+            Button(20, 520,  r'DSA_Visualizer\B_Pink.png', "Start",   28, 160, 80),
+            Button(190, 520, r'DSA_Visualizer\B_Pink.png', "Restart", 28, 160, 80),
+        ]
+        self.tgt_box = pygame.Rect(SCREEN_WIDTH - 180, 12, 140, 40)
+        self.tgt_active = False
+        self.tgt_text = ""
+
+        # remember dataset for “Restart”
+        self.base_values = self.array.values[:]
+
+    def _set_banner(self, msg, ms):
+        self.banner_text = msg
+        self.banner_until = pygame.time.get_ticks() + ms
+
+    def _draw_banner(self, screen):
+        if not self.banner_text or pygame.time.get_ticks() > self.banner_until:
+            return
+        surf = FONT_S3.render(self.banner_text, True, WHITE)
+        pad  = 8
+        rect = surf.get_rect(midtop=(SCREEN_WIDTH // 2, 8))
+        bg   = pygame.Rect(rect.x - pad, rect.y - pad, rect.w + 2*pad, rect.h + 2*pad)
+        pygame.draw.rect(screen, BLACK_1, bg)
+        pygame.draw.rect(screen, DED_GREEN, bg, 2)
+        screen.blit(surf, rect)
+
+    def start(self, target=None):
+        # set target
+        if target is None and self.tgt_text.strip().isdigit():
+            self.target = int(self.tgt_text)
+        elif target is not None:
+            self.target = target
+        elif self.target is None:
+            self.target = random.choice(self.array.values)
+
+        # kick the existing engine; IMPORTANT: turn off delete mode for pure search
+        self.array.start_linear_search(self.target)
+        self.array.delete_pending = False
+        self.running = True
+        self._set_banner(f"Starting Linear Search for {self.target}", 2000)
+
+    def restart(self):
+        # same dataset
+        self.array.values = self.base_values[:]
+        self.array.current_Count = len(self.array.values)
+        self.array.InitializeRects()
+        # reset the internal engine state
+        self.array.search_active = False
+        self.array.highlight_index = None
+        self.array.highlight_start = 0
+        self.array.search_i = 0
+        self.array.message = ""
+        self.array.message_until = 0
+        self.array.flash_all_until = 0
+        self.running = False
+        self._set_banner("Restarted on same array", 1400)
+
+    def handle_event(self, event):
+        if event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONDOWN):
+            for b in self.control_btns:
+                b.is_hovered(event)
+                if b.is_clicked(event):
+                    label = b.text.strip().lower()
+                    if label == "start":
+                        t = int(self.tgt_text) if self.tgt_text.strip().isdigit() else None
+                        self.start(t)
+                    elif label == "restart":
+                        self.restart()
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            self.tgt_active = self.tgt_box.collidepoint(event.pos)
+
+        if event.type == pygame.KEYDOWN:
+            if self.tgt_active:
+                if event.key == pygame.K_RETURN:
+                    try:
+                        self.target = int(self.tgt_text.strip())
+                        self._set_banner(f"Target set to {self.target}", 1200)
+                    except:
+                        self._set_banner("Invalid target", 1200)
+                elif event.key == pygame.K_BACKSPACE:
+                    self.tgt_text = self.tgt_text[:-1]
+                else:
+                    self.tgt_text += event.unicode
+
+            if event.key == pygame.K_SPACE:
+                t = int(self.tgt_text) if self.tgt_text.strip().isdigit() else None
+                self.start(t)
+            elif event.key == pygame.K_r:
+                self.restart()
+
+    def _draw_target_box(self, screen):
+        lab = FONT_S4.render("Target:", True, WHITE)
+        screen.blit(lab, (self.tgt_box.x - lab.get_width() - 8, self.tgt_box.y + 8))
+        pygame.draw.rect(
+            screen,
+            self.array.color_active if self.tgt_active else self.array.color_inactive,
+            self.tgt_box,
+            2
+        )
+        txt = FONT_S3.render(self.tgt_text, True, WHITE)
+        screen.blit(txt, (self.tgt_box.x + 5, self.tgt_box.y + 6))
+
+    def _draw_array_simple(self, screen):
+        """A lightweight drawer that mirrors Arrays.drawInterface highlights
+           without the insert/delete UI."""
+        now = pygame.time.get_ticks()
+        flash_all = now < self.array.flash_all_until
+
+        for i, rect in enumerate(self.array.rects):
+            if flash_all:
+                color = D_GREEN
+            elif (i == self.array.highlight_index and now - self.array.highlight_start < self.array.interval):
+                color = D_RED
+            else:
+                color = D_GREEN
+
+            pygame.draw.rect(screen, color, rect)
+            # value
+            if self.array.values[i] is not None:
+                txt = (FONT_S2 if self.array.size < 10 else FONT_S3).render(str(self.array.values[i]), True, WHITE)
+                screen.blit(txt, txt.get_rect(center=rect.center))
+
+        for i, rect in enumerate(self.array.id_rects):
+            pygame.draw.rect(screen, L_GREEN, rect)
+            idx = FONT_S4.render(str(i), True, WHITE)
+            screen.blit(idx, idx.get_rect(center=rect.center))
+
+        # message from Array engine (Found/Not found)
+        if self.array.message and now < self.array.message_until:
+            screen.blit(FONT_S2.render(self.array.message, True, WHITE), (25, 130))
+
+    def update_and_draw(self, screen):
+        # advance the engine
+        self.array.step_linear_search()
+
+        # draw
+        self._draw_array_simple(screen)
+        for b in self.control_btns:
+            b.display(screen)
+        self._draw_target_box(screen)
+        self._draw_banner(screen)
 
