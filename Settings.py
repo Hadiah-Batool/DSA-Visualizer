@@ -35,6 +35,7 @@ class Setting_Object:
           self.Bg_Music_Box= CheckBox(500, 300)
           self.Color_Mode_Box= CheckBox(500, 400)
           self.OK_Button= Button(10, 500, r'DSA_Visualizer\B_Br.png', "OK", 48, 200, 100)
+          self.Bg_Music_Box.is_Clicked= True
      def Handle_Events(self, event):
           
           self.Grid_Box.Handle_Collision(event)

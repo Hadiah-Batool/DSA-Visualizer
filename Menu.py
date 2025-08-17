@@ -47,6 +47,9 @@ class MenuObj:
         self.Bubble_Sort= Bubble_Sort()
         self.DarkMode= False
         self.ShowGrid=False
+        self.Bg_Music = pygame.mixer.music.load(r"DSA_Visualizer\roblox-minecraft-fortnite-video-game-music-358426 (1).mp3")
+        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(-1)
         i=80
         for B in self.ds_options:
             btn = Button(250, i, r'DSA_Visualizer\B_Pink.png', B, 30, 220, 110)
@@ -184,6 +187,10 @@ class MenuObj:
             self.ShowGrid = self.settings.Grid_Box.is_Clicked
             self.DarkMode = self.settings.Color_Mode_Box.is_Clicked
             self.state = "main"
+            if not self.settings.Bg_Music_Box.is_Clicked:
+                pygame.mixer.music.stop()
+            else:
+                pygame.mixer.music.play(-1)
             return
         else:
             self.ShowGrid = self.settings.Grid_Box.is_Clicked

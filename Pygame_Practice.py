@@ -7,9 +7,7 @@ pygame.init()
 screen = pygame.display.set_mode((800, 600))
 clock  = pygame.time.Clock()
 Icon= pygame.image.load(r"DSA_Visualizer\ICON.jpg")
-Bg_Music = pygame.mixer.music.load(r"DSA_Visualizer\roblox-minecraft-fortnite-video-game-music-358426 (1).mp3")
-pygame.mixer.music.set_volume(0.5)
-# pygame.mixer.music.play(-1)
+
 pygame.display.set_icon(Icon)
 Menu_Btns= []
 Sel_Btns=[]
