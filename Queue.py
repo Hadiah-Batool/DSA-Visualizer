@@ -115,7 +115,7 @@ class Queue_LinkedList_Based(LinkedList):
         #1 boxes for  value 
         self.input_box= pygame.Rect(10, 10, 140, 80)
         self.Head_Box = pygame.Rect(10, 120, 140, 80)
-        self.Tail_Box = pygame.Rect(600, 480, 140, 80)
+        self.Tail_Box = pygame.Rect(600, 420, 140, 80)
 
     def HandleInput(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -190,7 +190,7 @@ class Queue_LinkedList_Based(LinkedList):
 
 
         if(len(self.values)==0):
-            pygame.draw.line(screen, D_GREEN, (600, 480), (740, 555), 4)
+            pygame.draw.line(screen, D_GREEN, (600, 420), (740, 495), 4)
         elif(len(self.nodes)!=0):
             x1, y1= 670, 515
             x= (len(self.nodes))-1

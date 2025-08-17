@@ -59,7 +59,7 @@ class MenuObj:
         self.ShowGrid=False
         self.Bg_Music = pygame.mixer.music.load(r"DSA_Visualizer\roblox-minecraft-fortnite-video-game-music-358426 (1).mp3")
         pygame.mixer.music.set_volume(0.5)
-        pygame.mixer.music.play(-1)
+        # pygame.mixer.music.play(-1)
         i=80
         for B in self.ds_options:
             btn = Button(250, i, r'DSA_Visualizer\B_Pink.png', B, 30, 220, 110)
