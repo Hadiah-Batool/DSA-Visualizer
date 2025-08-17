@@ -845,7 +845,7 @@ class Linear_Search:
         elif target is not None:
             self.target = target
         elif self.target is None:
-            self.target = random.choice(self.array.values)
+            return
 
         # kick the existing engine; IMPORTANT: turn off delete mode for pure search
         self.array.start_linear_search(self.target)
@@ -864,6 +864,8 @@ class Linear_Search:
         self.array.highlight_start = 0
         self.array.search_i = 0
         self.array.message = ""
+        self.tgt_text = ""
+    
         self.array.message_until = 0
         self.array.flash_all_until = 0
         self.running = False
