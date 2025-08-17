@@ -49,7 +49,7 @@ class Queue_Array_Based:
 
     def Enqueue(self, screen):
         if self.is_full():
-            self._blit_message(screen, "Queue is full!", RED)
+            self._blit_message(screen, "Queue is full!", D_RED)
             return
         # write at Rear, highlight, advance
         self.array.values[self.Rear] = self.array.val
@@ -87,7 +87,7 @@ class Queue_Array_Based:
         screen.blit(heading_Surface, ( 120, 240))
     def Dequeue(self, screen):
         if self.is_empty():
-            self._blit_message(screen, "Queue is empty!", RED)
+            self._blit_message(screen, "Queue is empty!", D_RED)
             return
       
         self.array.highlight_index = self.Front
